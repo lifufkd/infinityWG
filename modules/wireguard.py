@@ -19,8 +19,8 @@ class WireGuard:
 
     def start(self, config_path):
         try:
-            result = subprocess.run(['sudo', 'wg-quick', 'up', config_path], check=True, capture_output=True, text=True)
-            self.__logger.logger.info("Successfully start WireGuard:", result)
+            subprocess.run(['sudo', 'wg-quick', 'up', config_path], check=True, capture_output=True, text=True)
+            self.__logger.logger.info("Successfully start WireGuard:")
         except subprocess.CalledProcessError as e:
             self.__logger.logger.error("Error starting WireGuard:")
         except Exception as e:
@@ -28,11 +28,11 @@ class WireGuard:
 
     def stop(self, config_path):
         try:
-            result = subprocess.run(['sudo', 'wg-quick', 'down', config_path], check=True, capture_output=True,
+            subprocess.run(['sudo', 'wg-quick', 'down', config_path], check=True, capture_output=True,
                                     text=True)
-            self.__logger.logger.info("Successfully stop WireGuard:", result)
+            self.__logger.logger.info("Successfully stop WireGuard:")
         except subprocess.CalledProcessError as e:
-            self.__logger.logger.error("Error starting WireGuard:")
+            self.__logger.logger.error("Error stopping WireGuard:")
         except Exception as e:
             self.__logger.logger.error("Error, WireGuard not found:")
 

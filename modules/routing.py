@@ -20,33 +20,66 @@ class SetupRouting:
         except Exception as e:
             self.__logger.logger.error(f"Error executing command '{command}':")
 
+    def get_wg_gateway(self, interface):
+        """
+        Получает IP-адрес шлюза интерфейса WireGuard.
+
+        Args:
+        interface (str): Имя интерфейса WireGuard, по умолчанию "wg0".
+
+        Returns:
+        str: IP-адрес шлюза интерфейса.
+        """
+        try:
+            result = subprocess.run(f"ip route show dev {interface}", shell=True, check=True, stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            for line in result.stdout.decode().splitlines():
+                if "default" in line:
+                    return line.split()[2]  # Предполагаем, что IP-адрес шлюза третий элемент в строке
+        except subprocess.CalledProcessError as e:
+            print(f"Command to get wg gateway failed with error: {e.stderr.decode()}")
+            return None
+
+    def get_wireguard_subnet(self, interface):
+        """
+        Получает подсеть WireGuard.
+
+        Args:
+        interface (str): Имя интерфейса WireGuard, по умолчанию "wg0".
+
+        Returns:
+        str: Подсеть WireGuard.
+        """
+        try:
+            result = subprocess.run(f"ip addr show dev {interface}", shell=True, check=True, stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            for line in result.stdout.decode().splitlines():
+                if "inet" in line:
+                    return line.split()[1]  # Предполагаем, что подсеть второй элемент в строке
+        except subprocess.CalledProcessError as e:
+            print(f"Command to get WireGuard subnet failed with error: {e.stderr.decode()}")
+            return None
+
     def setup(self, server_interface, client_interface):
-        # 1. Настройка маршрутизации
+        client_gateway = self.get_wg_gateway(client_interface)
+        server_subnet = self.get_wireguard_subnet(server_interface)
+        commands = [
+            # Маркировка трафика из WireGuard контейнера
+            f"sudo iptables -t mangle -A PREROUTING -i docker0 -s {server_subnet} -j MARK --set-mark 1",
 
-        # Разрешаем пересылку пакетов
-        self.self.run_command("sudo sysctl -w net.ipv4.ip_forward=1")
+            # Маршрутизация маркированного трафика через wg0
+            "sudo ip rule add fwmark 1 table 200",
+            f"sudo ip route add default via {client_gateway} dev {client_interface} table 200",
 
-        # Создание маркера и новой таблицы маршрутизации
-        self.run_command("sudo ip rule add fwmark 10 table 100")
+            # Настройка NAT для трафика из WireGuard
+            f"sudo iptables -t nat -A POSTROUTING -o {client_interface} -j MASQUERADE",
 
-        # Добавляем таблицу маршрутизации
-        with open("/etc/iproute2/rt_tables", "a") as rt_tables:
-            rt_tables.write(f"100    {client_interface}\n")
+            # Правило для маршрутизации трафика с основного интерфейса через основное подключение (например, eth0)
+            "sudo ip route add default via $(ip route | grep default | grep -v ttt | awk '{print $3}') table 201",
 
-        # Настройка маршрута по умолчанию для новой таблицы
-        self.run_command(f"sudo ip route add default dev {client_interface} table 100")
-
-        # 2. Настройка iptables для маркировки пакетов
-
-        # Маскарад для выхода в интернет через второй интерфейс
-        self.run_command(f"sudo iptables -t nat -A POSTROUTING -o {client_interface} -j MASQUERADE")
-
-        # Перенаправление трафика от WireGuard клиентов через wg0 к wg1
-        self.run_command(f"sudo iptables -A FORWARD -i {server_interface} -o {client_interface} -j ACCEPT")
-        self.run_command(f"sudo iptables -A FORWARD -i {client_interface} -o {server_interface} -m state --state RELATED,ESTABLISHED -j ACCEPT")
-
-        # Маркировка пакетов, отправленных через интерфейс wg1
-        self.run_command(f"sudo iptables -t mangle -A OUTPUT -o {client_interface} -j MARK --set-mark 10")
-
-        # Сохраняем правила iptables
-        self.run_command("sudo sh -c 'iptables-save > /etc/iptables/rules.v4'")
+            # Добавление правила маршрутизации для основного интерфейса (например, eth0)
+            "sudo ip rule add from $(ip addr show wlp1s0 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1) table 201"
+        ]
+        for cmd in commands:
+            self.run_command(cmd)
+        self.__logger.logger.info(f"Routing successfully set up!")
