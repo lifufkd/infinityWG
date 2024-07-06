@@ -37,7 +37,9 @@ class Sqlite3:
                     pwd_hash TEXT NOT NULL,
                     access_token TEXT NOT NULL,
                     full_name TEXT,
-                    preferred_country TEXT,
+                    ip_address TEXT,
+                    best_vpn_country_ips TEXT,
+                    best_vpn_ip TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)

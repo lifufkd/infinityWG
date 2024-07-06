@@ -19,7 +19,7 @@ from modules.logger import Logger
 
 
 class VpnJantit:
-    def __init__(self, db_connector: MySql = None, config: Config = None, logger: Logger = None, version: str = 'realise'):
+    def __init__(self, db_connector: MySql = None, config: Config = None, logger: Logger = None, version: str = 'release'):
         super(VpnJantit, self).__init__()
         self.__version = version
         self.__config = config
@@ -29,7 +29,7 @@ class VpnJantit:
         self.init()
 
     def init(self):
-        if self.__version == 'realise':
+        if self.__version == 'release':
             self.__driver = Driver(uc=True, no_sandbox=True, uc_cdp=True,
                                    uc_cdp_events=True, extension_dir='./src/selenium/adblock', headless2=True, headed=False, agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36')
             time.sleep(20)
@@ -51,10 +51,10 @@ class VpnJantit:
 
     def main(self) -> True or False:
         self.__driver.get(self.check_config_key_existed("vpnjantit_home_page"))
-        time.sleep(1)
-        cards = self.__driver.find_elements(By.CSS_SELECTOR, "section#free > div > div:nth-of-type(3)")
-        for i in cards:
-            print(i.get_attribute("div"))
+        time.sleep(5)
+        cards = self.__driver.find_elements(By.CSS_SELECTOR, "section#free > div > div:nth-of-type(2) > div:nth-of-type(3)")
+        print(len(cards))
+        time.sleep(999999)
 
 
     def close_tab_by_domain(self, domain_name):

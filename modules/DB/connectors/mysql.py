@@ -53,11 +53,13 @@ class MySql:
                 cursor.execute(f"""
                     CREATE TABLE IF NOT EXISTS users (
                         user_id INT AUTO_INCREMENT PRIMARY KEY,
-                        username VARCHAR(50) NOT NULL,
-                        pwd_hash VARCHAR(100) NOT NULL,
-                        access_token VARCHAR(100) NOT NULL,
+                        username VARCHAR(50),
+                        pwd_hash VARCHAR(100),
+                        access_token VARCHAR(100),
                         full_name VARCHAR(100),
-                        preferred_country VARCHAR(100),
+                        ip_address VARCHAR(16),
+                        best_vpn_country_ips JSON,
+                        best_vpn_ip VARCHAR(16),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """)
