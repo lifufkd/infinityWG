@@ -51,7 +51,11 @@ class VpnJantit:
 
     def main(self) -> True or False:
         self.__driver.get(self.check_config_key_existed("vpnjantit_home_page"))
-        time.sleep(50000)
+        time.sleep(1)
+        cards = self.__driver.find_elements(By.CSS_SELECTOR, "section#free > div > div:nth-of-type(3)")
+        for i in cards:
+            print(i.get_attribute("div"))
+
 
     def close_tab_by_domain(self, domain_name):
         original_window = self.__driver.current_window_handle

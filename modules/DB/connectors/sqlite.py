@@ -3,21 +3,30 @@
 #               sbr                 #
 #####################################
 import os
+import sys
 import sqlite3
 from threading import Lock
+from modules.logger import Logger
+from modules.config import Config
 #####################################
 
 
 class Sqlite3:
-    def __init__(self, path):
+    def __init__(self, config: Config = None, logger: Logger = None):
         super(Sqlite3, self).__init__()
-        self.__db_path = path
         self.__lock = Lock()
+        self.__db_path = None
         self.__cursor = None
         self.__db = None
+        self.__config = config
+        self.__logger = logger
         self.init()
 
     def init(self):
+        self.__db_path = self.__config.get_config_data("sqlite3_db_path")
+        if self.__db_path is None:
+            self.__logger.logger.error("Path to Sqlite3 DB unfilled or incorrect!")
+            sys.exit()
         if not os.path.exists(self.__db_path):
             self.__db = sqlite3.connect(self.__db_path, check_same_thread=False)
             self.__cursor = self.__db.cursor()

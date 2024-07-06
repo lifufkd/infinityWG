@@ -2,58 +2,70 @@
 #       Created By       #
 #          SBR           #
 ##########################
+import os
 import sys
 import pymysql.cursors
-import os
-from dotenv import load_dotenv
+from modules.logger import Logger
+from modules.config import Config
 ##########################
 
 ##########################
 
 
 class MySql:
-    def __init__(self, logger):
+    def __init__(self, config: Config = None, logger: Logger = None):
         super(MySql, self).__init__()
+        self.__config = config
         self.__logger = logger
         self.__db = None
-        load_dotenv()
         self.connect()
         self.init()
 
     def connect(self):
+        creds = self.__config.get_config_data("mysql_creds")
+        if creds is None:
+            self.__logger.logger.error("Mysql creds for connection unfilled or incorrect!")
+            sys.exit()
         try:
-            self.__db = pymysql.connect(host=os.getenv('MYSQL_HOST'),
-                                        user=os.getenv('MYSQL_LOGIN'),
-                                        password=os.getenv('MYSQL_PASSWORD'),
-                                        database=os.getenv('MYSQL_DATABASE'),
+            self.__db = pymysql.connect(host=creds["host"],
+                                        user=creds["login"],
+                                        password=creds["password"],
+                                        database=creds["database"],
                                         cursorclass=pymysql.cursors.DictCursor)
         except pymysql.err.OperationalError as e:
+            # DB schema not found, try to create it
             if e.args[0] == 1049:
-                self.__db = pymysql.connect(host=os.getenv('MYSQL_HOST'),
-                                            user=os.getenv('MYSQL_LOGIN'),
-                                            password=os.getenv('MYSQL_PASSWORD'),
+                self.__db = pymysql.connect(host=creds["host"],
+                                            user=creds["login"],
+                                            password=creds["password"],
                                             cursorclass=pymysql.cursors.DictCursor)
+            else:
+                self.__logger.logger.error(f"Connection error!")
+                sys.exit()
+        except KeyError as e:
+            self.__logger.logger.error(f"Mysql '{e.args[0]}' key unfilled or incorrect!")
+            sys.exit()
 
     def init(self):
         try:
             with self.__db.cursor() as cursor:
                 cursor.execute(f"CREATE SCHEMA IF NOT EXISTS {os.getenv('MYSQL_DATABASE')}")
                 cursor.execute(f"""
-                                    CREATE TABLE IF NOT EXISTS users (
-                                        user_id INT AUTO_INCREMENT PRIMARY KEY,
-                                        username VARCHAR(50) NOT NULL,
-                                        pwd_hash VARCHAR(100) NOT NULL,
-                                        access_token VARCHAR(100) NOT NULL,
-                                        full_name VARCHAR(100),
-                                        preferred_country VARCHAR(100),
-                                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                                    )
-                                    """)
+                    CREATE TABLE IF NOT EXISTS users (
+                        user_id INT AUTO_INCREMENT PRIMARY KEY,
+                        username VARCHAR(50) NOT NULL,
+                        pwd_hash VARCHAR(100) NOT NULL,
+                        access_token VARCHAR(100) NOT NULL,
+                        full_name VARCHAR(100),
+                        preferred_country VARCHAR(100),
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
             self.__db.commit()
-        except:
+        except pymysql.err.OperationalError:
             self.__logger.logger.error(f"Error while creating DB")
-        finally:
-            self.__db.close()
+            sys.exit()
+        self.__db.close()
 
     def db_read(self, query, params=()):
         try:
@@ -63,7 +75,7 @@ class MySql:
             self.__db.close()
             return data
         except:
-            self.__logger.logger.error(f"Error while executing query: {query}")
+            self.__logger.logger.error(f"Error while executing query: {query}", exc_info=True)
             return None
 
     def db_write(self, query, params=()):
@@ -72,6 +84,7 @@ class MySql:
             with self.__db.cursor() as cursor:
                 cursor.execute(query, params)
             self.__db.commit()
+            self.__db.close()
             return True
         except:
             self.__logger.logger.error(f"Error while executing query: {query}", exc_info=True)

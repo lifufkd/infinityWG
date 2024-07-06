@@ -17,19 +17,13 @@ version = 'debug'
 def start_setup() -> None:
     match config.get_config_data("DB"):
         case "mysql":
-            db_connector = MySql(logger)
+            db_connector = MySql(config, logger)
         case "sqlite3":
-            sqlite3_path = config.get_config_data("sqlite3_db_path")
-            if sqlite3_path is not None:
-                db_connector = Sqlite3(sqlite3_path)
-            else:
-                logger.logger.error("Path to Sqlite3 DB unfilled or incorrect!")
-                sys.exit()
+            db_connector = Sqlite3(config, logger)
         case _:
             logger.logger.error("DB source unfilled or incorrect!")
             sys.exit()
     jantit = VpnJantit(db_connector, config, logger, version)
-
 
 
 def main() -> None:

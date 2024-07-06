@@ -18,6 +18,12 @@ class Config:
         self.__default_config_data = {
             "version": "realise",
             "DB": "sqlite3",
+            "mysql_creds": {
+                "host": "localhost",
+                "login": "***",
+                "password": "***",
+                "database": "InfinityWG"
+            },
             "sqlite3_db_path": "db.sqlite3",
             "vpnjantit_home_page": "https://www.vpnjantit.com/free-wireguard"
         }
