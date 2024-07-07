@@ -11,9 +11,10 @@ import logging
 
 
 class Logger:
-    def __init__(self):
+    def __init__(self, version):
         super(Logger, self).__init__()
         self.logger = None
+        self.__version = version
         self.init()
 
     def init(self):
@@ -34,3 +35,15 @@ class Logger:
         # Add the handlers to the logger
         self.logger.addHandler(file_handler)
         self.logger.addHandler(stream_handler)
+
+    def info(self, message):
+        self.logger.info(message)
+
+    def warning(self, message):
+        self.logger.warning(message)
+
+    def error(self, message):
+        if self.__version == 'release':
+            self.logger.error(message)
+        elif self.__version == 'debug':
+            self.logger.error(message, exc_info=True)

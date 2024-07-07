@@ -25,7 +25,7 @@ class Sqlite3:
     def init(self):
         self.__db_path = self.__config.get_config_data("sqlite3_db_path")
         if self.__db_path is None:
-            self.__logger.logger.error("Path to Sqlite3 DB unfilled or incorrect!")
+            self.__logger.error("Path to Sqlite3 DB unfilled or incorrect!")
             sys.exit()
         if not os.path.exists(self.__db_path):
             self.__db = sqlite3.connect(self.__db_path, check_same_thread=False)
@@ -38,8 +38,8 @@ class Sqlite3:
                     access_token TEXT NOT NULL,
                     full_name TEXT,
                     ip_address TEXT,
-                    best_vpn_country_ips TEXT,
-                    best_vpn_ip TEXT,
+                    best_vpn_countries TEXT,
+                    best_vpn_address TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)

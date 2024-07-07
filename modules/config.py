@@ -24,8 +24,7 @@ class Config:
                 "password": "***",
                 "database": "InfinityWG"
             },
-            "sqlite3_db_path": "db.sqlite3",
-            "vpnjantit_home_page": "https://www.vpnjantit.com/free-wireguard"
+            "sqlite3_db_path": "db.sqlite3"
         }
         self.load_config()
 

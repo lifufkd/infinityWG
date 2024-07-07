@@ -21,9 +21,10 @@ def start_setup() -> None:
         case "sqlite3":
             db_connector = Sqlite3(config, logger)
         case _:
-            logger.logger.error("DB source unfilled or incorrect!")
+            logger.error("DB source unfilled or incorrect!")
             sys.exit()
     jantit = VpnJantit(db_connector, config, logger, version)
+    jantit.refresh_server_list()
 
 
 def main() -> None:
@@ -31,7 +32,7 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    logger = Logger()
+    logger = Logger(version)
     config = Config(config_path)
     start_setup()
     main()
