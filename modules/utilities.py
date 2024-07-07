@@ -15,7 +15,11 @@ from typing import Optional
 #####################################
 
 
-def check_config_key_existed(config, logger, key):
+def exception_factory(exception, message) -> Optional[Exception]:
+    return exception(message)
+
+
+def check_config_key_existed(config, logger, key) -> Optional[any]:
     value = config.get_config_data(key)
     if value is not None:
         return value
@@ -24,20 +28,23 @@ def check_config_key_existed(config, logger, key):
         sys.exit()
 
 
-def write_json_file(logger, path, data):
+def write_json_file(logger, path, data) -> Optional[bool]:
     try:
         with open(path, 'w') as file:
             file.write(json.dumps(data, indent=4))
+            file.close()
             return True
     except:
         logger.error("Permission error while saving file!")
         sys.exit()
 
 
-def read_json_file(logger, path):
+def read_json_file(logger, path) -> Optional[dict]:
     try:
         with open(path, 'r') as file:
-            return json.loads(file.read())
+            data = json.loads(file.read())
+            file.close()
+        return data
     except:
         logger.error("The json file is corrupted or missing!")
         sys.exit()
@@ -84,6 +91,30 @@ def generate_random_string(length):
     random_string = ''.join(random.choice(characters) for _ in range(length))
 
     return random_string
+
+
+def read_config_file(logger, file_name, timeout=30) -> Optional[str] or None:
+    counter = 0
+    try:
+        while True:
+            if counter >= timeout:
+                raise exception_factory(TimeoutError, "Timeout error")
+            if os.path.exists(f"./downloaded_files/{file_name}"):
+                with open(f"./downloaded_files/{file_name}", 'r') as file:
+                    data = file.read()
+                    file.close()
+                os.remove(f"./downloaded_files/{file_name}")
+                return data
+            else:
+                counter += 1
+                time.sleep(1)
+    except PermissionError:
+        logger.error("Permission error while opening config file")
+        return None
+    except TimeoutError:
+        logger.error("Еhe config did not download")
+        return None
+
 
 
 def ping(host, timeout=1):

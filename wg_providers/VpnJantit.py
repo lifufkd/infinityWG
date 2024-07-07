@@ -15,7 +15,8 @@ from modules.DB.db_actions import CRUD
 from modules.CaptchaSolver import CaptchaSolver
 from modules.config import Config
 from modules.logger import Logger
-from modules.utilities import (write_json_file, read_json_file, get_best_server, generate_random_string)
+from modules.utilities import (write_json_file, read_json_file, get_best_server,
+                               generate_random_string, read_config_file, exception_factory)
 ##########################
 
 ##########################
@@ -48,18 +49,6 @@ class VpnJantit:
         else:
             self.__logger.error("Wrong version specified!")
             sys.exit()
-        self.set_download_dir("downloads")
-
-    def set_download_dir(self, down_path):
-        self.__driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
-        params = {
-            'cmd': 'Page.setDownloadBehavior',
-            'params': {
-                'behavior': 'allow',
-                'downloadPath': os.path.normpath(os.path.abspath(down_path))
-            }
-        }
-        self.__driver.execute("send_command", params)
 
     def link_assembly(self) -> Optional[dict]:
         def get_link_prefix(data):
@@ -68,21 +57,23 @@ class VpnJantit:
         if self._country is None:
             user_server = self.__CRUD.get_user_server(self._user_id)
             if user_server is None:
-                return {"status": False, "link": None, "message": "server with best connection not found"}
+                return {"status": False, "link": None, "server": None, "message": "server with best connection not found"}
             server_prefix = get_link_prefix(json.loads(user_server))
             link = f"https://www.vpnjantit.com/create-free-account?server={server_prefix}&type=WireGuard"
         else:
             user_servers = self.__CRUD.get_user_server_by_country(self._user_id)
             if user_servers is None:
-                return {"status": False, "link": None, "message": "server with best connection not found"}
+                return {"status": False, "link": None, "server": None, "message": "server with best connection not found"}
             user_servers = json.loads(user_servers)
             if self._server is None:
+                server_prefix = get_link_prefix(get_best_server(user_servers, self._country))
                 link = f"https://www.vpnjantit.com/create-free-account?server=" \
-                       f"{get_link_prefix(get_best_server(user_servers, self._country))}&type=WireGuard"
+                       f"{server_prefix}&type=WireGuard"
             else:
+                server_prefix = get_link_prefix(get_best_server(user_servers, self._country, self._server))
                 link = f"https://www.vpnjantit.com/create-free-account?server=" \
-                       f"{get_link_prefix(get_best_server(user_servers, self._country, self._server))}&type=WireGuard"
-        return {"status": True, "link": link, "message": None}
+                       f"{server_prefix}&type=WireGuard"
+        return {"status": True, "link": link, "server": server_prefix, "message": None}
 
     def refresh_server_list(self):
         # Read JSON countries file
@@ -112,13 +103,14 @@ class VpnJantit:
 
     def get_config(self) -> Optional[json]:
         # data = self.link_assembly()
-        data = {"status": True, "link": "https://www.vpnjantit.com/create-free-account?server=fi2&type=WireGuard", "message": None}
+        data = {"status": True, "link": "https://www.vpnjantit.com/create-free-account?server=fi2&type=WireGuard", "server": "fi2", "message": None}
         if data.get("status"):
             try:
                 self.__driver.get(data.get("link"))
                 # Generate random username
+                random_login = generate_random_string(13)
                 self.__driver.find_element(By.CSS_SELECTOR, "section#create > div > div > div > div > div > div > "
-                                                            "form > div > input").send_keys(generate_random_string(13))
+                                                            "form > div > input").send_keys(random_login)
                 # Getting site key for solve captcha
                 site_key = self.__driver.find_element(By.CLASS_NAME, "g-recaptcha").get_attribute("data-sitekey")
                 # Send request to solve captcha
@@ -140,7 +132,11 @@ class VpnJantit:
                 self.__driver.wait_for_element(By.CSS_SELECTOR, download_btn_selector, timeout=30)
                 self.__driver.wait_for_element_visible(By.CSS_SELECTOR, download_btn_selector, timeout=30)
                 self.__driver.find_element(By.CSS_SELECTOR, download_btn_selector).click()
-                time.sleep(999999)
+                config_data = read_config_file(self.__logger, f"{random_login}-{data.get('server')}jantit.conf")
+                if config_data is None:
+                    raise exception_factory(Exception, "Config file not existed")
+                data.update({"config": config_data})
+                return data
             except:
                 self.__logger.error("An error occurred")
                 data.update({"status": False})
