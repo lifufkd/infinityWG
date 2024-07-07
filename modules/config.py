@@ -24,7 +24,8 @@ class Config:
                 "password": "***",
                 "database": "InfinityWG"
             },
-            "sqlite3_db_path": "db.sqlite3"
+            "sqlite3_db_path": "db.sqlite3",
+            "2captcha_apiKey": "***"
         }
         self.load_config()
 
