@@ -24,7 +24,7 @@ from modules.utilities import (write_json_file, read_json_file, ping, get_best_s
 
 class VpnJantit:
     def __init__(self, db_connector: 'MySql' or 'Sqlite3' = None, config: 'Config' = None,
-                 logger: 'Logger' = None, country: str = None, server: str = None, user_id: int = None, version: str = 'release'):
+                 logger: 'Logger' = None, country: str = None, server: str = None, user_id: str = None, version: str = 'release'):
         super(VpnJantit, self).__init__()
         self.__version = version
         self.__config = config

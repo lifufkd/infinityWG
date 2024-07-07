@@ -23,8 +23,8 @@ def start_setup() -> None:
         case _:
             logger.error("DB source unfilled or incorrect!")
             sys.exit()
-    jantit = VpnJantit(db_connector, config, logger, version)
-    jantit.refresh_server_list()
+    jantit = VpnJantit(db_connector, config, logger, "", "", "", version)
+    jantit.get_config()
 
 
 def main() -> None:
