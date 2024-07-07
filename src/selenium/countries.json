@@ -415,18 +415,144 @@
             2
         ]
     ],
-    "sk": [],
-    "sp": [],
-    "se": [],
-    "sz": [],
+    "sk": [
+        [
+            "sk1.vpnjantit.com",
+            1
+        ]
+    ],
+    "sp": [
+        [
+            "sp1.vpnjantit.com",
+            1
+        ]
+    ],
+    "se": [
+        [
+            "se1.vpnjantit.com",
+            1
+        ],
+        [
+            "se2.vpnjantit.com",
+            2
+        ]
+    ],
+    "sz": [
+        [
+            "sz1.vpnjantit.com",
+            1
+        ]
+    ],
     "ua": [],
     "uk": [],
     "ar": [],
-    "br": [],
-    "ca": [],
-    "cl": [],
-    "mx": [],
-    "usa": [],
-    "sa": [],
+    "br": [
+        [
+            "br1.vpnjantit.com",
+            1
+        ],
+        [
+            "br2.vpnjantit.com",
+            2
+        ],
+        [
+            "br4.vpnjantit.com",
+            4
+        ],
+        [
+            "br5.vpnjantit.com",
+            5
+        ],
+        [
+            "br6.vpnjantit.com",
+            6
+        ]
+    ],
+    "ca": [
+        [
+            "ca1.vpnjantit.com",
+            1
+        ],
+        [
+            "ca2.vpnjantit.com",
+            2
+        ]
+    ],
+    "cl": [
+        [
+            "cl2.vpnjantit.com",
+            2
+        ]
+    ],
+    "mx": [
+        [
+            "mx1.vpnjantit.com",
+            1
+        ],
+        [
+            "mx2.vpnjantit.com",
+            2
+        ],
+        [
+            "mx3.vpnjantit.com",
+            3
+        ]
+    ],
+    "usa": [
+        [
+            "usa1.vpnjantit.com",
+            1
+        ],
+        [
+            "usa2.vpnjantit.com",
+            2
+        ],
+        [
+            "usa3.vpnjantit.com",
+            3
+        ],
+        [
+            "usa4.vpnjantit.com",
+            4
+        ],
+        [
+            "usa5.vpnjantit.com",
+            5
+        ],
+        [
+            "usa6.vpnjantit.com",
+            6
+        ],
+        [
+            "usa7.vpnjantit.com",
+            7
+        ],
+        [
+            "usa8.vpnjantit.com",
+            8
+        ],
+        [
+            "usa9.vpnjantit.com",
+            9
+        ],
+        [
+            "usa10.vpnjantit.com",
+            10
+        ]
+    ],
+    "sa": [
+        [
+            "sa1.vpnjantit.com",
+            1
+        ],
+        [
+            "sa2.vpnjantit.com",
+            2
+        ],
+        [
+            "sa3.vpnjantit.com",
+            3
+        ]
+    ],
     "au": []
 }
