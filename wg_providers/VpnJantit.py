@@ -2,7 +2,6 @@
 #       Created By       #
 #          SBR           #
 ##########################
-import os
 import json
 import time
 import sys
@@ -11,11 +10,11 @@ from selenium.webdriver.common.by import By
 from typing import Optional
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
-from modules.DB.db_actions import CRUD
+from modules.DB.CRUD import CRUD
 from modules.CaptchaSolver import CaptchaSolver
-from modules.config import Config
-from modules.logger import Logger
-from modules.utilities import (write_json_file, read_json_file, get_best_server,
+from modules.Config import Config
+from modules.Logger import Logger
+from modules.Utilities import (write_json_file, read_json_file, get_best_server,
                                generate_random_string, read_config_file, exception_factory)
 ##########################
 

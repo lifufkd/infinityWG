@@ -6,8 +6,8 @@ import os
 import sys
 import sqlite3
 from threading import Lock
-from modules.logger import Logger
-from modules.config import Config
+from modules.Logger import Logger
+from modules.Config import Config
 #####################################
 
 

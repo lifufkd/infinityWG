@@ -3,8 +3,8 @@
 #          SBR           #
 ##########################
 import sys
-from modules.logger import Logger
-from modules.config import Config
+from modules.Logger import Logger
+from modules.Config import Config
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
 from wg_providers.VpnJantit import VpnJantit

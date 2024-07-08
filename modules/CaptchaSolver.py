@@ -5,8 +5,8 @@
 import sys
 import time
 from typing import Optional
-from modules.logger import Logger
-from modules.config import Config
+from modules.Logger import Logger
+from modules.Config import Config
 from twocaptcha import TwoCaptcha
 ##########################
 

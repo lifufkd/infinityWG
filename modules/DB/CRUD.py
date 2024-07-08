@@ -2,16 +2,15 @@
 #       Created By       #
 #          SBR           #
 ##########################
-from modules.logger import Logger
-from modules.config import Config
 from modules.DB.connectors.mysql import MySql
+from modules.DB.connectors.sqlite import Sqlite3
 ##########################
 config_path = 'config.json'
 ##########################
 
 
 class CRUD:
-    def __init__(self, db):
+    def __init__(self, db: 'MySql' or 'Sqlite3'):
         super(CRUD, self).__init__()
         self.__db = db
 
