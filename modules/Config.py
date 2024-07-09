@@ -18,18 +18,23 @@ class Config:
         self.__default_config_data = {
             "version": "realise",
             "DB": "sqlite3",
+            "sqlite3_db_path": "db.sqlite3",
             "mysql_creds": {
                 "host": "localhost",
                 "login": "***",
                 "password": "***",
                 "database": "InfinityWG"
             },
-            "sqlite3_db_path": "db.sqlite3",
-            "2captcha_apiKey": "***",
             "user": {
                 "min_login_length": 8,
                 "min_password_length": 8
-            }
+            },
+            "access_token": {
+                "expire_minutes": 15,
+                "algorithm": "HS256",
+                "server_secret_key": "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+            },
+            "2captcha_apiKey": "***"
         }
         self.load_config()
 

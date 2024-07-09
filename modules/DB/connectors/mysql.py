@@ -20,6 +20,7 @@ class MySql:
         self._logger = logger
         self.type = 'mysql'
         self._db = None
+        self.init()
 
     def init(self):
         creds = self._config.get_config_data("mysql_creds")
@@ -79,8 +80,8 @@ class MySql:
                     access_token VARCHAR(100),
                     full_name VARCHAR(100),
                     ip_address VARCHAR(16),
-                    best_vpn_countries VARCHAR(16),
-                    best_vpn_address VARCHAR(16),
+                    best_vpn_countries LONGTEXT,
+                    best_vpn_address MEDIUMTEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)

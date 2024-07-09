@@ -23,6 +23,22 @@ class CRUD:
                            (username, password_hash, full_name))
         return status
 
+    def get_user_hash(self, username: str) -> Optional[str] | bool:
+        query = "SELECT `pwd_hash` FROM `users` WHERE `username` = %s"
+        data = self.__db.db_read(replace_args_for_db(self.__db, query), (username, ))
+        if data:
+            return data[0]["pwd_hash"]
+        else:
+            return False
+
+    def get_user(self, username: str) -> Optional[dict] | bool:
+        query = "SELECT `user_id`, `username`, `pwd_hash`, `access_token`, `full_name`, " \
+                "`ip_address`, `best_vpn_countries`, `best_vpn_address`, `created_at` FROM users WHERE `username` = %s"
+        data = self.__db.db_read(replace_args_for_db(self.__db, query), (username, ))
+        if not data:
+            return False
+        return data[0]
+
     def get_user_server(self, row_id: int):
         query = "SELECT `best_vpn_address` FROM `users` WHERE `user_id` = %s"
         data = self.__db.db_read(replace_args_for_db(self.__db, query), (row_id, ))
@@ -44,6 +60,6 @@ class CRUD:
         users = self.__db.db_read('SELECT `username` FROM users')
         if users:
             for user in users:
-                data.append(user.values())
+                data.append(user["username"])
         return data
 

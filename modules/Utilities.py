@@ -23,7 +23,7 @@ def exception_factory(exception, message) -> Optional[Exception]:
 
 def replace_args_for_db(db: MySql | Sqlite3, query: str) -> Optional[str]:
     if db.type == 'sqlite3':
-        query.replace("%s", "?")
+        query = query.replace("%s", "?")
     return query
 
 
