@@ -8,6 +8,7 @@ import sqlite3
 from threading import Lock
 from modules.Logger import Logger
 from modules.Config import Config
+from typing import Optional
 #####################################
 
 
@@ -20,6 +21,7 @@ class Sqlite3:
         self.__db = None
         self.__config = config
         self.__logger = logger
+        self.type = 'sqlite3'
         self.init()
 
     def init(self):
@@ -29,13 +31,14 @@ class Sqlite3:
             sys.exit()
         if not os.path.exists(self.__db_path):
             self.__db = sqlite3.connect(self.__db_path, check_same_thread=False)
+            self.__db.row_factory = sqlite3.Row
             self.__cursor = self.__db.cursor()
             self.__cursor.execute(f"""
                 CREATE TABLE IF NOT EXISTS users (
                     user_id INTEGER AUTO_INCREMENT PRIMARY KEY,
                     username TEXT NOT NULL,
                     pwd_hash TEXT NOT NULL,
-                    access_token TEXT NOT NULL,
+                    access_token TEXT,
                     full_name TEXT,
                     ip_address TEXT,
                     best_vpn_countries TEXT,
@@ -46,19 +49,38 @@ class Sqlite3:
             self.__db.commit()
         else:
             self.__db = sqlite3.connect(self.__db_path, check_same_thread=False)
+            self.__db.row_factory = sqlite3.Row
             self.__cursor = self.__db.cursor()
 
-    def db_write(self, queri, args):
+    def db_write(self, query: str, args: Optional[tuple] = ()) -> Optional[bool]:
+        status = bool
         self.set_lock()
-        self.__cursor.execute(queri, args)
-        self.__db.commit()
-        self.realise_lock()
+        try:
+            self.__cursor.execute(query, args)
+            self.__db.commit()
+            status = True
+        except Exception as e:
+            self.__logger.error(f"Error while executing query: {query} - {e}")
+            status = False
+        finally:
+            self.realise_lock()
+            return status
 
-    def db_read(self, queri, args):
+    def db_read(self, query: str, args: Optional[tuple] = ()) -> Optional[list[dict]] | bool:
+        status = bool
         self.set_lock()
-        self.__cursor.execute(queri, args)
-        self.realise_lock()
-        return self.__cursor.fetchall()
+        try:
+            self.__cursor.execute(query, args)
+            results = self.__cursor.fetchall()
+            status = True
+        except Exception as e:
+            self.__logger.error(f"Error while executing query: {query} - {e}")
+            status = False
+        finally:
+            self.realise_lock()
+            if not status:
+                return False
+            return [dict(row) for row in results]
 
     def set_lock(self):
         self.__lock.acquire(True)

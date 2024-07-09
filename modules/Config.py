@@ -25,7 +25,11 @@ class Config:
                 "database": "InfinityWG"
             },
             "sqlite3_db_path": "db.sqlite3",
-            "2captcha_apiKey": "***"
+            "2captcha_apiKey": "***",
+            "user": {
+                "min_login_length": 8,
+                "min_password_length": 8
+            }
         }
         self.load_config()
 

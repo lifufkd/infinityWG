@@ -12,11 +12,19 @@ import select
 import random
 import string
 from typing import Optional
+from modules.DB.connectors.mysql import MySql
+from modules.DB.connectors.sqlite import Sqlite3
 #####################################
 
 
 def exception_factory(exception, message) -> Optional[Exception]:
     return exception(message)
+
+
+def replace_args_for_db(db: MySql | Sqlite3, query: str) -> Optional[str]:
+    if db.type == 'sqlite3':
+        query.replace("%s", "?")
+    return query
 
 
 def check_config_key_existed(config, logger, key) -> Optional[any]:
