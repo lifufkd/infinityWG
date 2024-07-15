@@ -22,8 +22,9 @@ from modules.Utilities import (write_json_file, read_json_file, get_best_server,
 
 
 class VpnJantit:
-    def __init__(self, db_connector: 'MySql' or 'Sqlite3' = None, config: 'Config' = None,
-                 logger: 'Logger' = None, country: str = None, server: str = None, user_id: str = None, version: str = 'release'):
+    def __init__(self, db_connector: MySql | Sqlite3 | None = None, config: Config | None = None,
+                 logger: Logger | None = None, country: str | None = None, server: str | None = None,
+                 user_id: int | None = None, version: str = 'release'):
         super(VpnJantit, self).__init__()
         self.__version = version
         self.__config = config
@@ -101,8 +102,7 @@ class VpnJantit:
                 write_json_file(self.__logger, './src/selenium/countries.json', countries)
 
     def get_config(self) -> Optional[json]:
-        # data = self.link_assembly()
-        data = {"status": True, "link": "https://www.vpnjantit.com/create-free-account?server=fi2&type=WireGuard", "server": "fi2", "message": None}
+        data = self.link_assembly()
         if data.get("status"):
             try:
                 self.__driver.get(data.get("link"))

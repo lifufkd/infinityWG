@@ -17,6 +17,11 @@ from modules.DB.connectors.sqlite import Sqlite3
 #####################################
 
 
+class Version():
+    release: str = 'release'
+    debug: str = 'debug'
+
+
 def exception_factory(exception, message) -> Optional[Exception]:
     return exception(message)
 
@@ -68,18 +73,32 @@ def get_ip_address_by_domain(domain_name):
     return None
 
 
-def get_best_server(servers: dict, country: str, server_number: str = None) -> Optional[str]:
-    server_pings = dict()
-    selected_country = servers[country]
-    if server_number is not None:
-        for index, server in enumerate(selected_country):
+def get_best_server(servers: dict, country: str = None, server_number: str = None) -> Optional[str]:
+
+    def get_best_ping(_country):
+        server_pings = dict()
+        for index, server in enumerate(_country):
             server_pings.update({server[2]: index})
         min_ping = min(list(server_pings.keys()))
-        return selected_country[server_pings[min_ping]]
+        return _country[server_pings[min_ping]]
+
+    if country:
+        selected_country = servers[country]
+        if server_number:
+            return get_best_ping(selected_country)
+        else:
+            for server in selected_country:
+                if server[1] == server_number:
+                    return server
     else:
-        for server in selected_country:
-            if server[1] == server_number:
-                return server
+        avg_ping = dict()
+        for country in servers:
+            selected_country = servers[country]
+            selected_best_server = get_best_ping(selected_country)
+            avg_ping.update({selected_best_server[2]: selected_best_server})
+        best_server_ping = min(list(avg_ping.keys()))
+        return avg_ping[best_server_ping]
+
 
 
 def generate_random_string(length):

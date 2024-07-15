@@ -31,6 +31,21 @@ class CRUD:
         else:
             return False
 
+    def user_is_exists(self, username: str) -> bool:
+        query = "SELECT COUNT(*) FROM `users` WHERE `username` = %s"
+        data = self.__db.db_read(replace_args_for_db(self.__db, query), (username, ))
+        if data:
+            if data[0]["COUNT(*)"] == 1:
+                return True
+        return False
+
+    def get_user_id(self, username: str) -> int | None:
+        query = "SELECT `user_id` FROM `users` WHERE `username` = %s"
+        data = self.__db.db_read(replace_args_for_db(self.__db, query), (username, ))
+        if not data:
+            return False
+        return data[0]["user_id"]
+
     def get_user(self, username: str) -> Optional[dict] | bool:
         query = "SELECT `user_id`, `username`, `pwd_hash`, `access_token`, `full_name`, " \
                 "`ip_address`, `best_vpn_countries`, `best_vpn_address`, `created_at` FROM users WHERE `username` = %s"
@@ -39,21 +54,19 @@ class CRUD:
             return False
         return data[0]
 
-    def get_user_server(self, row_id: int):
+    def get_user_server(self, row_id: int | None):
         query = "SELECT `best_vpn_address` FROM `users` WHERE `user_id` = %s"
         data = self.__db.db_read(replace_args_for_db(self.__db, query), (row_id, ))
-        if len(data) > 0:
-            return data[0][0]
-        else:
-            return None
+        if not data:
+            return False
+        return data[0]["best_vpn_address"]
 
-    def get_user_server_by_country(self, row_id: int):
+    def get_user_server_by_country(self, row_id: int | None):
         query = "SELECT `best_vpn_countries` FROM `users` WHERE `user_id` = %s"
         data = self.__db.db_read(replace_args_for_db(self.__db, query), (row_id, ))
-        if len(data) > 0:
-            return data[0][0]
-        else:
-            return None
+        if not data:
+            return False
+        return data[0]["best_vpn_countries"]
 
     def get_users_logins(self) -> Optional[list]:
         data = list()

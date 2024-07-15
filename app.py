@@ -6,6 +6,7 @@ import uvicorn
 import sys
 from modules.Logger import Logger
 from modules.Config import Config
+from modules.Utilities import Version, read_json_file
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
 from modules.DB.CRUD import CRUD
@@ -21,11 +22,11 @@ from passlib.context import CryptContext
 from pydantic import BaseModel, Field
 ##########################
 config_path = 'config.json'
-version = 'debug'
+version = Version.debug
 ##########################
 
 
-def setup_db() -> CRUD:
+def setup_db():
     match config.get_config_data("DB"):
         case "mysql":
             db_connector = MySql(config, logger)
@@ -34,9 +35,7 @@ def setup_db() -> CRUD:
         case _:
             logger.error("DB source unfilled or incorrect!")
             sys.exit()
-    return CRUD(db_connector)
-    # jantit = VpnJantit(db_connector, config, logger, "", "", "", version)
-    # jantit.get_config()
+    return CRUD(db_connector), db_connector
 
 
 def main():
@@ -57,17 +56,25 @@ def main():
     class TokenData(BaseModel):
         username: str | None = None
 
-    class UserInDB(UserCreds):
-        user_id: int
-        pwd_hash: str
-        ip_address: str | None = None
-        best_vpn_countries: str | None = None
-        best_vpn_address: str | None = None
-        created_at: datetime
+    class GetConfig(BaseModel):
+        country: str | None = None
+        server: str | None = None
 
-    def user_data(username: str):
-        user_dict = db.get_user(username)
-        return UserInDB(**user_dict)
+    # class UserInDB(UserCreds):
+    #     user_id: int
+    #     pwd_hash: str
+    #     ip_address: str | None = None
+    #     best_vpn_countries: str | None = None
+    #     best_vpn_address: str | None = None
+    #     created_at: datetime
+
+    # def user_data(username: str) -> UserInDB | bool:
+    #     user_dict = db.get_user(username)
+    #     if user_dict is None:
+    #         return False
+    #     return UserInDB(**user_dict)
+
+
 
     def get_password_hash(password):
         return pwd_context.hash(password)
@@ -95,8 +102,7 @@ def main():
                                  algorithm=config.get_config_data("access_token").get("algorithm"))
         return encoded_jwt
 
-    async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-        print(token)
+    async def get_token_status(token: Annotated[str, Depends(oauth2_scheme)]) -> TokenData:
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -112,10 +118,39 @@ def main():
             token_data = TokenData(username=username)
         except InvalidTokenError:
             raise credentials_exception
-        user = user_data(username=token_data.username)
-        if user is None:
+        if not db.user_is_exists(token_data.username):
             raise credentials_exception
-        return user
+        return token_data
+
+    async def get_user_id(user: Annotated[TokenData, Depends(get_token_status)]) -> int:
+        return db.get_user_id(user.username)
+
+    def check_country_existed(country: str) -> dict:
+        data = read_json_file(logger, "src/selenium/countries.json")
+        if country not in list(data.keys()):
+            return {"status": False}
+        return {"status": True, "country": country}
+
+    # async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    #     credentials_exception = HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Could not validate credentials",
+    #         headers={"WWW-Authenticate": "Bearer"},
+    #     )
+    #     try:
+    #         payload = jwt.decode(token,
+    #                              config.get_config_data("access_token").get("server_secret_key"),
+    #                              algorithms=[config.get_config_data("access_token").get("algorithm")])
+    #         username: str = payload.get("sub")
+    #         if username is None:
+    #             raise credentials_exception
+    #         token_data = TokenData(username=username)
+    #     except InvalidTokenError:
+    #         raise credentials_exception
+    #     user = user_data(username=token_data.username)
+    #     if user is None:
+    #         raise credentials_exception
+    #     return user
 
     @app.post("/users/registration")
     async def registration(user_data: Annotated[RegisterUser, Body()]):
@@ -126,7 +161,7 @@ def main():
         else:
             raise HTTPException(status_code=401, detail="User already existed")
 
-    @app.post("/users/login")
+    @app.post("/token")
     async def login_for_access_token(
             form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     ) -> Token:
@@ -143,17 +178,31 @@ def main():
         )
         return Token(access_token=access_token, token_type="bearer")
 
-    @app.get("/users/check", response_model=UserInDB)
+    @app.get("/users/check/token", response_model=dict)
     async def read_users_me(
-            current_user: Annotated[UserInDB, Depends(get_current_user)],
+            token_status: Annotated[bool, Depends(get_token_status)],
     ):
-        return current_user
+        return {"status": True}
+
+    @app.post("/get/config")
+    async def get_config(user_data: GetConfig, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
+        user_server = check_country_existed(user_data.country)
+        if not user_server.get("status"):
+            raise HTTPException(status_code=404, detail="Country does not exists")
+        parser = VpnJantit(db_connector, config, logger, user_server.get("country"), user_data.server,
+                           user_id, version)
+        return parser.get_config()
+
+    @app.get("/get/countries")
+    async def get_countries(token_status: Annotated[bool, Depends(get_token_status)]) -> dict:
+        if token_status:
+            return read_json_file(logger, "src/selenium/countries.json")
 
 
 if __name__ == '__main__':
     logger = Logger(version)
     config = Config(config_path)
-    db = setup_db()
+    db, db_connector = setup_db()
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
     app = FastAPI()
