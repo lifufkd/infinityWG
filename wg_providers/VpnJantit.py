@@ -32,7 +32,7 @@ class VpnJantit:
         self._country = country
         self._server = server
         self._user_id = user_id
-        self.__driver = None
+        self.__driver: Driver = None
         self.__CRUD = CRUD(db_connector)
         self._captcha_solver = CaptchaSolver(config, logger)
         self.init()
@@ -57,13 +57,13 @@ class VpnJantit:
         if self._country is None:
             user_server = self.__CRUD.get_user_server(self._user_id)
             if user_server is None:
-                return {"status": False, "link": None, "server": None, "message": "server with best connection not found", "code": 0}
+                return {"status": False, "link": None, "server": None, "detail": "server with best connection not found", "code": 0}
             server_prefix = get_link_prefix(json.loads(user_server))
             link = f"https://www.vpnjantit.com/create-free-account?server={server_prefix}&type=WireGuard"
         else:
             user_servers = self.__CRUD.get_user_server_by_country(self._user_id)
             if user_servers is None:
-                return {"status": False, "link": None, "server": None, "message": "server with best connection not found", "code": 1}
+                return {"status": False, "link": None, "server": None, "detail": "server with best connection not found", "code": 1}
             user_servers = json.loads(user_servers)
             if self._server is None:
                 server_prefix = get_link_prefix(get_best_server(user_servers, self._country))
@@ -73,7 +73,7 @@ class VpnJantit:
                 server_prefix = get_link_prefix(get_best_server(user_servers, self._country, self._server))
                 link = f"https://www.vpnjantit.com/create-free-account?server=" \
                        f"{server_prefix}&type=WireGuard"
-        return {"status": True, "link": link, "server": server_prefix, "message": None, "code": None}
+        return {"status": True, "link": link, "server": server_prefix, "detail": None, "code": None}
 
     def refresh_server_list(self):
         # Read JSON countries file
@@ -110,17 +110,25 @@ class VpnJantit:
                 random_login = generate_random_string(13)
                 self.__driver.find_element(By.CSS_SELECTOR, "section#create > div > div > div > div > div > div > "
                                                             "form > div > input").send_keys(random_login)
-                # Getting site key for solve captcha
-                site_key = self.__driver.find_element(By.CLASS_NAME, "g-recaptcha").get_attribute("data-sitekey")
-                # Send request to solve captcha
-                response = self._captcha_solver.recaptcha_v2(
-                    site_key=site_key,
-                    captcha_url=data.get("link")
-                )
-                # Set the solved Captcha
-                recaptcha_response_element = self.__driver.find_element(By.ID, 'g-recaptcha-response')
-                recaptcha_response_code = response["code"]
-                self.__driver.execute_script(f'arguments[0].value = "{recaptcha_response_code}";', recaptcha_response_element)
+                # self.__driver.wait_for_element(By.NAME, 'cf-turnstile-response', timeout=30)
+                recaptcha_response_element = self.__driver.find_element(By.CLASS_NAME, 'cf-turnstile').find_element(By.TAG_NAME, "input")
+                # Check if captcha solved automatically
+                _data = recaptcha_response_element.get_attribute('value')
+                print(_data)
+                if len(_data) != 0:
+                    print(2342342342342)
+                    # Getting site key for solve captcha
+                    site_key = self.__driver.find_element(By.CLASS_NAME, "cf-turnstile").get_attribute("data-sitekey")
+                    # Send request to solve captcha
+                    response = self._captcha_solver.cloudflare_turnstile(
+                        sitekey=site_key,
+                        captcha_url=data.get("link")
+                    )
+                    # Set the solved Captcha
+                    recaptcha_response_code = response["code"]
+                    self.__driver.execute_script("arguments[0].style.display = 'block';", recaptcha_response_element)
+                    self.__driver.execute_script("arguments[0].value = arguments[1];",
+                                                 recaptcha_response_element, recaptcha_response_code)
                 self.__driver.find_element(By.CSS_SELECTOR, "section#create > div > div > div > div > div > div > form > "
                                                             "div:nth-of-type(2) > input").click()
 
@@ -136,10 +144,10 @@ class VpnJantit:
                     raise exception_factory(Exception, "Config file not existed")
                 data.update({"config": config_data})
                 return data
-            except:
-                self.__logger.error("An error occurred")
+            except Exception as e:
+                self.__logger.error(f"An error occurred - {e}")
                 data.update({"status": False})
-                data.update({"message": "An error occurred"})
+                data.update({"detail": f"An error occurred - {e}"})
                 return data
         else:
             return data

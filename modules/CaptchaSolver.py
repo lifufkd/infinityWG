@@ -16,7 +16,7 @@ class CaptchaSolver:
         super(CaptchaSolver, self).__init__()
         self._logger = logger
         self._config = config
-        self._solver = None
+        self._solver: TwoCaptcha | None = None
         self.init()
 
     def init(self):
@@ -81,13 +81,25 @@ class CaptchaSolver:
             url=captcha_url
         )
 
-    def turnstile(self, sitekey: str, captcha_url: str, data: str, pagedata: str, action: str,
-                  user_agent: str) -> Optional[str]:
-        return self._solver.turnstile(
-            sitekey=sitekey,
-            url=captcha_url,
-            data=data,
-            pagedata=pagedata,
-            action=action,
-            useragent=user_agent
-        )
+    def cloudflare_turnstile(self,
+                             sitekey: str,
+                             captcha_url: str,
+                             data: str | None = None,
+                             pagedata: str | None = None,
+                             action: str | None = None,
+                             user_agent: str | None = None,
+                             full: bool = False) -> Optional[dict]:
+        if full:
+            return self._solver.turnstile(
+                sitekey=sitekey,
+                url=captcha_url,
+                data=data,
+                pagedata=pagedata,
+                action=action,
+                useragent=user_agent
+            )
+        else:
+            return self._solver.turnstile(
+                sitekey=sitekey,
+                url=captcha_url
+            )
