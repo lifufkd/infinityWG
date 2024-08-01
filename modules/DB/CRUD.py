@@ -2,6 +2,8 @@
 #       Created By       #
 #          SBR           #
 ##########################
+import json
+
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
 from typing import Optional
@@ -46,21 +48,6 @@ class CRUD:
             return False
         return data[0]["user_id"]
 
-    def get_user(self, username: str) -> Optional[dict] | bool:
-        query = "SELECT `user_id`, `username`, `pwd_hash`, `access_token`, `full_name`, " \
-                "`ip_address`, `best_vpn_countries`, `best_vpn_address`, `created_at` FROM users WHERE `username` = %s"
-        data = self.__db.db_read(replace_args_for_db(self.__db, query), (username, ))
-        if not data:
-            return False
-        return data[0]
-
-    def get_user_server(self, row_id: int | None):
-        query = "SELECT `best_vpn_address` FROM `users` WHERE `user_id` = %s"
-        data = self.__db.db_read(replace_args_for_db(self.__db, query), (row_id, ))
-        if not data:
-            return False
-        return data[0]["best_vpn_address"]
-
     def get_user_server_by_country(self, row_id: int | None):
         query = "SELECT `best_vpn_countries` FROM `users` WHERE `user_id` = %s"
         data = self.__db.db_read(replace_args_for_db(self.__db, query), (row_id, ))
@@ -75,4 +62,43 @@ class CRUD:
             for user in users:
                 data.append(user["username"])
         return data
+
+    def get_user_server(self, row_id: int | None):
+        query = "SELECT `best_vpn_address` FROM `users` WHERE `user_id` = %s"
+        data = self.__db.db_read(replace_args_for_db(self.__db, query), (row_id, ))
+        if not data:
+            return False
+        """
+        [
+            fr1.vpnjantit.com
+        ]
+        """
+        return data[0]["best_vpn_address"]
+
+    def get_user_ip(self, user_id: int) -> str | bool:
+        query = "SELECT `ip_address` FROM `users` WHERE `user_id` = %s"
+        data = self.__db.db_read(replace_args_for_db(self.__db, query), (user_id,))
+        if not data:
+            return False
+        return data[0]["ip_address"]
+
+    def update_user_ip(self, user_id: int, ip: str | None = None):
+        if ip == self.get_user_ip(user_id):
+            return True
+        query = "UPDATE `users` SET `ip_address` = %s WHERE `user_id` = %s"
+        status = self.__db.db_write(replace_args_for_db(self.__db, query),
+                                    (ip, user_id))
+        return status
+
+    def update_user_best_vpn_address(self, user_id: int, host: list[str] | None = None):
+        query = "UPDATE `users` SET `best_vpn_address` = %s WHERE `user_id` = %s"
+        status = self.__db.db_write(replace_args_for_db(self.__db, query),
+                                    (json.dumps(host), user_id))
+        return status
+
+    def update_user_best_vpn_countries(self, user_id: int, countries: dict | None = None):
+        query = "UPDATE `users` SET `best_vpn_countries` = %s WHERE `user_id` = %s"
+        status = self.__db.db_write(replace_args_for_db(self.__db, query),
+                                    (json.dumps(countries), user_id))
+        return status
 

@@ -1,558 +1,720 @@
 {
-    "az": [
-        [
-            "az1.vpnjantit.com",
-            1
+    "az": {
+        "name": "Azerbaijan",
+        "hosts": [
+            [
+                "az1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "bh": [
-        [
-            "bh1.vpnjantit.com",
-            1
+    },
+    "bh": {
+        "name": "Bahrain",
+        "hosts": [
+            [
+                "bh1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "bd": [
-        [
-            "bd1.vpnjantit.com",
-            1
-        ],
-        [
-            "bd2.vpnjantit.com",
-            2
+    },
+    "bd": {
+        "name": "Bangladesh",
+        "hosts": [
+            [
+                "bd1.vpnjantit.com",
+                1
+            ],
+            [
+                "bd2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "kh": [
-        [
-            "kh1.vpnjantit.com",
-            1
+    },
+    "kh": {
+        "name": "Cambodia",
+        "hosts": [
+            [
+                "kh1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "hk": [
-        [
-            "hk1.vpnjantit.com",
-            1
-        ],
-        [
-            "hk2.vpnjantit.com",
-            2
-        ],
-        [
-            "hk3.vpnjantit.com",
-            3
+    },
+    "hk": {
+        "name": "Hong Kong",
+        "hosts": [
+            [
+                "hk1.vpnjantit.com",
+                1
+            ],
+            [
+                "hk2.vpnjantit.com",
+                2
+            ],
+            [
+                "hk3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "in": [
-        [
-            "in1.vpnjantit.com",
-            1
-        ],
-        [
-            "in2.vpnjantit.com",
-            2
-        ],
-        [
-            "in3.vpnjantit.com",
-            3
-        ],
-        [
-            "in4.vpnjantit.com",
-            4
-        ],
-        [
-            "in5.vpnjantit.com",
-            5
-        ],
-        [
-            "in6.vpnjantit.com",
-            6
+    },
+    "in": {
+        "name": "India",
+        "hosts": [
+            [
+                "in1.vpnjantit.com",
+                1
+            ],
+            [
+                "in2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "indo": [],
-    "il": [
-        [
-            "il1.vpnjantit.com",
-            1
+    },
+    "indo": {
+        "name": "Indonesia",
+        "hosts": []
+    },
+    "il": {
+        "name": "Israel",
+        "hosts": [
+            [
+                "il1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "jp": [
-        [
-            "jp2.vpnjantit.com",
-            2
-        ],
-        [
-            "jp3.vpnjantit.com",
-            3
+    },
+    "jp": {
+        "name": "Japan",
+        "hosts": [
+            [
+                "jp1.vpnjantit.com",
+                1
+            ],
+            [
+                "jp2.vpnjantit.com",
+                2
+            ],
+            [
+                "jp3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "kz": [
-        [
-            "kz1.vpnjantit.com",
-            1
-        ],
-        [
-            "kz2.vpnjantit.com",
-            2
+    },
+    "kz": {
+        "name": "Kazakhstan",
+        "hosts": [
+            [
+                "kz1.vpnjantit.com",
+                1
+            ],
+            [
+                "kz2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "my": [
-        [
-            "my1.vpnjantit.com",
-            1
-        ],
-        [
-            "my2.vpnjantit.com",
-            2
-        ],
-        [
-            "my3.vpnjantit.com",
-            3
-        ],
-        [
-            "my4.vpnjantit.com",
-            4
+    },
+    "my": {
+        "name": "Malaysia",
+        "hosts": [
+            [
+                "my1.vpnjantit.com",
+                1
+            ],
+            [
+                "my2.vpnjantit.com",
+                2
+            ],
+            [
+                "my3.vpnjantit.com",
+                3
+            ],
+            [
+                "my4.vpnjantit.com",
+                4
+            ]
         ]
-    ],
-    "pk": [],
-    "ph": [
-        [
-            "ph1.vpnjantit.com",
-            1
-        ],
-        [
-            "ph2.vpnjantit.com",
-            2
-        ],
-        [
-            "ph3.vpnjantit.com",
-            3
-        ],
-        [
-            "ph4.vpnjantit.com",
-            4
-        ],
-        [
-            "ph5.vpnjantit.com",
-            5
-        ],
-        [
-            "ph6.vpnjantit.com",
-            6
-        ],
-        [
-            "ph7.vpnjantit.com",
-            7
+    },
+    "pk": {
+        "name": "Pakistan",
+        "hosts": []
+    },
+    "ph": {
+        "name": "Philippines",
+        "hosts": [
+            [
+                "ph1.vpnjantit.com",
+                1
+            ],
+            [
+                "ph2.vpnjantit.com",
+                2
+            ],
+            [
+                "ph3.vpnjantit.com",
+                3
+            ],
+            [
+                "ph4.vpnjantit.com",
+                4
+            ],
+            [
+                "ph5.vpnjantit.com",
+                5
+            ],
+            [
+                "ph6.vpnjantit.com",
+                6
+            ],
+            [
+                "ph7.vpnjantit.com",
+                7
+            ],
+            [
+                "ph8.vpnjantit.com",
+                8
+            ],
+            [
+                "ph9.vpnjantit.com",
+                9
+            ]
         ]
-    ],
-    "sau": [
-        [
-            "sau1.vpnjantit.com",
-            1
+    },
+    "sau": {
+        "name": "Saudi Arabia",
+        "hosts": [
+            [
+                "sau1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "sg": [
-        [
-            "sg1.vpnjantit.com",
-            1
-        ],
-        [
-            "sg2.vpnjantit.com",
-            2
-        ],
-        [
-            "sg3.vpnjantit.com",
-            3
+    },
+    "sg": {
+        "name": "Singapore",
+        "hosts": [
+            [
+                "sg1.vpnjantit.com",
+                1
+            ],
+            [
+                "sg2.vpnjantit.com",
+                2
+            ],
+            [
+                "sg3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "kr": [
-        [
-            "kr1.vpnjantit.com",
-            1
-        ],
-        [
-            "kr2.vpnjantit.com",
-            2
+    },
+    "kr": {
+        "name": "South Korea",
+        "hosts": []
+    },
+    "th": {
+        "name": "Thailand",
+        "hosts": [
+            [
+                "th1.vpnjantit.com",
+                1
+            ],
+            [
+                "th2.vpnjantit.com",
+                2
+            ],
+            [
+                "th3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "th": [
-        [
-            "th1.vpnjantit.com",
-            1
-        ],
-        [
-            "th2.vpnjantit.com",
-            2
-        ],
-        [
-            "th3.vpnjantit.com",
-            3
+    },
+    "tr": {
+        "name": "Turkey",
+        "hosts": [
+            [
+                "tr1.vpnjantit.com",
+                1
+            ],
+            [
+                "tr2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "tr": [
-        [
-            "tr1.vpnjantit.com",
-            1
-        ],
-        [
-            "tr2.vpnjantit.com",
-            2
+    },
+    "ae": {
+        "name": "United Arab Emirates",
+        "hosts": [
+            [
+                "ae1.vpnjantit.com",
+                1
+            ],
+            [
+                "ae2.vpnjantit.com",
+                2
+            ],
+            [
+                "ae3.vpnjantit.com",
+                3
+            ],
+            [
+                "ae4.vpnjantit.com",
+                4
+            ]
         ]
-    ],
-    "ae": [
-        [
-            "ae1.vpnjantit.com",
-            1
-        ],
-        [
-            "ae2.vpnjantit.com",
-            2
-        ],
-        [
-            "ae3.vpnjantit.com",
-            3
-        ],
-        [
-            "ae4.vpnjantit.com",
-            4
+    },
+    "vn": {
+        "name": "Vietnam",
+        "hosts": [
+            [
+                "vn1.vpnjantit.com",
+                1
+            ],
+            [
+                "vn2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "vn": [
-        [
-            "vn1.vpnjantit.com",
-            1
-        ],
-        [
-            "vn2.vpnjantit.com",
-            2
+    },
+    "be": {
+        "name": "Belgium",
+        "hosts": [
+            [
+                "be1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "be": [
-        [
-            "be1.vpnjantit.com",
-            1
+    },
+    "bg": {
+        "name": "Bulgaria",
+        "hosts": [
+            [
+                "bg1.vpnjantit.com",
+                1
+            ],
+            [
+                "bg2.vpnjantit.com",
+                2
+            ],
+            [
+                "bg3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "bg": [
-        [
-            "bg1.vpnjantit.com",
-            1
-        ],
-        [
-            "bg2.vpnjantit.com",
-            2
-        ],
-        [
-            "bg3.vpnjantit.com",
-            3
+    },
+    "cz": {
+        "name": "Czech Republic",
+        "hosts": [
+            [
+                "cz1.vpnjantit.com",
+                1
+            ],
+            [
+                "cz2.vpnjantit.com",
+                2
+            ],
+            [
+                "cz3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "cz": [
-        [
-            "cz1.vpnjantit.com",
-            1
-        ],
-        [
-            "cz2.vpnjantit.com",
-            2
-        ],
-        [
-            "cz3.vpnjantit.com",
-            3
+    },
+    "ee": {
+        "name": "Estonia",
+        "hosts": [
+            [
+                "ee1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "ee": [
-        [
-            "ee1.vpnjantit.com",
-            1
+    },
+    "fi": {
+        "name": "Finland",
+        "hosts": [
+            [
+                "fi1.vpnjantit.com",
+                1
+            ],
+            [
+                "fi2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "fi": [
-        [
-            "fi1.vpnjantit.com",
-            1
-        ],
-        [
-            "fi2.vpnjantit.com",
-            2
+    },
+    "fr": {
+        "name": "France",
+        "hosts": [
+            [
+                "fr1.vpnjantit.com",
+                1
+            ],
+            [
+                "fr2.vpnjantit.com",
+                2
+            ],
+            [
+                "fr3.vpnjantit.com",
+                3
+            ],
+            [
+                "fr4.vpnjantit.com",
+                4
+            ],
+            [
+                "fr5.vpnjantit.com",
+                5
+            ]
         ]
-    ],
-    "fr": [
-        [
-            "fr1.vpnjantit.com",
-            1
-        ],
-        [
-            "fr2.vpnjantit.com",
-            2
-        ],
-        [
-            "fr3.vpnjantit.com",
-            3
-        ],
-        [
-            "fr4.vpnjantit.com",
-            4
-        ],
-        [
-            "fr5.vpnjantit.com",
-            5
+    },
+    "gr": {
+        "name": "Germany",
+        "hosts": [
+            [
+                "gr1.vpnjantit.com",
+                1
+            ],
+            [
+                "gr2.vpnjantit.com",
+                2
+            ],
+            [
+                "gr3.vpnjantit.com",
+                3
+            ],
+            [
+                "gr4.vpnjantit.com",
+                4
+            ],
+            [
+                "gr5.vpnjantit.com",
+                5
+            ],
+            [
+                "gr6.vpnjantit.com",
+                6
+            ],
+            [
+                "gr7.vpnjantit.com",
+                7
+            ]
         ]
-    ],
-    "gr": [
-        [
-            "gr1.vpnjantit.com",
-            1
-        ],
-        [
-            "gr2.vpnjantit.com",
-            2
-        ],
-        [
-            "gr3.vpnjantit.com",
-            3
-        ],
-        [
-            "gr4.vpnjantit.com",
-            4
-        ],
-        [
-            "gr5.vpnjantit.com",
-            5
-        ],
-        [
-            "gr6.vpnjantit.com",
-            6
-        ],
-        [
-            "gr7.vpnjantit.com",
-            7
+    },
+    "hu": {
+        "name": "Hungary",
+        "hosts": [
+            [
+                "hu1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "hu": [
-        [
-            "hu1.vpnjantit.com",
-            1
+    },
+    "ie": {
+        "name": "Ireland",
+        "hosts": [
+            [
+                "ie1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "ie": [
-        [
-            "ie1.vpnjantit.com",
-            1
+    },
+    "it": {
+        "name": "Italy",
+        "hosts": [
+            [
+                "it1.vpnjantit.com",
+                1
+            ],
+            [
+                "it2.vpnjantit.com",
+                2
+            ],
+            [
+                "it3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "it": [
-        [
-            "it1.vpnjantit.com",
-            1
-        ],
-        [
-            "it2.vpnjantit.com",
-            2
-        ],
-        [
-            "it3.vpnjantit.com",
-            3
+    },
+    "lv": {
+        "name": "Latvia",
+        "hosts": [
+            [
+                "lv1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "lu": [
-        [
-            "lu1.vpnjantit.com",
-            1
+    },
+    "lu": {
+        "name": "Luxembourg",
+        "hosts": [
+            [
+                "lu1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "md": [
-        [
-            "md1.vpnjantit.com",
-            1
+    },
+    "md": {
+        "name": "Moldova",
+        "hosts": [
+            [
+                "md1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "nl": [
-        [
-            "nl1.vpnjantit.com",
-            1
-        ],
-        [
-            "nl2.vpnjantit.com",
-            2
-        ],
-        [
-            "nl3.vpnjantit.com",
-            3
-        ],
-        [
-            "nl4.vpnjantit.com",
-            4
+    },
+    "nl": {
+        "name": "Netherlands",
+        "hosts": [
+            [
+                "nl1.vpnjantit.com",
+                1
+            ],
+            [
+                "nl2.vpnjantit.com",
+                2
+            ],
+            [
+                "nl3.vpnjantit.com",
+                3
+            ],
+            [
+                "nl4.vpnjantit.com",
+                4
+            ]
         ]
-    ],
-    "pl": [
-        [
-            "pl1.vpnjantit.com",
-            1
-        ],
-        [
-            "pl2.vpnjantit.com",
-            2
+    },
+    "pl": {
+        "name": "Poland",
+        "hosts": [
+            [
+                "pl1.vpnjantit.com",
+                1
+            ],
+            [
+                "pl2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "pt": [
-        [
-            "pt1.vpnjantit.com",
-            1
+    },
+    "pt": {
+        "name": "Portugal",
+        "hosts": [
+            [
+                "pt1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "ro": [
-        [
-            "ro1.vpnjantit.com",
-            1
+    },
+    "ro": {
+        "name": "Romania",
+        "hosts": [
+            [
+                "ro1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "ru": [
-        [
-            "ru1.vpnjantit.com",
-            1
-        ],
-        [
-            "ru2.vpnjantit.com",
-            2
+    },
+    "ru": {
+        "name": "Russia",
+        "hosts": [
+            [
+                "ru1.vpnjantit.com",
+                1
+            ],
+            [
+                "ru2.vpnjantit.com",
+                2
+            ],
+            [
+                "ru3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "sk": [
-        [
-            "sk1.vpnjantit.com",
-            1
+    },
+    "sk": {
+        "name": "Slovakia",
+        "hosts": [
+            [
+                "sk1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "sp": [
-        [
-            "sp1.vpnjantit.com",
-            1
+    },
+    "sp": {
+        "name": "Spain",
+        "hosts": [
+            [
+                "sp1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "se": [
-        [
-            "se1.vpnjantit.com",
-            1
-        ],
-        [
-            "se2.vpnjantit.com",
-            2
+    },
+    "se": {
+        "name": "Sweden",
+        "hosts": [
+            [
+                "se1.vpnjantit.com",
+                1
+            ],
+            [
+                "se2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "sz": [
-        [
-            "sz1.vpnjantit.com",
-            1
+    },
+    "sz": {
+        "name": "Switzerland",
+        "hosts": [
+            [
+                "sz1.vpnjantit.com",
+                1
+            ]
         ]
-    ],
-    "ua": [],
-    "uk": [],
-    "ar": [],
-    "br": [
-        [
-            "br1.vpnjantit.com",
-            1
-        ],
-        [
-            "br2.vpnjantit.com",
-            2
-        ],
-        [
-            "br4.vpnjantit.com",
-            4
-        ],
-        [
-            "br5.vpnjantit.com",
-            5
-        ],
-        [
-            "br6.vpnjantit.com",
-            6
+    },
+    "ua": {
+        "name": "Ukraine",
+        "hosts": [
+            [
+                "ua1.vpnjantit.com",
+                1
+            ],
+            [
+                "ua2.vpnjantit.com",
+                2
+            ],
+            [
+                "ua3.vpnjantit.com",
+                3
+            ],
+            [
+                "ua4.vpnjantit.com",
+                4
+            ]
         ]
-    ],
-    "ca": [
-        [
-            "ca1.vpnjantit.com",
-            1
-        ],
-        [
-            "ca2.vpnjantit.com",
-            2
+    },
+    "uk": {
+        "name": "United Kingdom",
+        "hosts": []
+    },
+    "ar": {
+        "name": "Argentina",
+        "hosts": [
+            [
+                "ar1.vpnjantit.com",
+                1
+            ],
+            [
+                "ar2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "cl": [
-        [
-            "cl2.vpnjantit.com",
-            2
+    },
+    "br": {
+        "name": "Brazil",
+        "hosts": []
+    },
+    "ca": {
+        "name": "Canada",
+        "hosts": [
+            [
+                "ca1.vpnjantit.com",
+                1
+            ],
+            [
+                "ca2.vpnjantit.com",
+                2
+            ]
         ]
-    ],
-    "mx": [
-        [
-            "mx1.vpnjantit.com",
-            1
-        ],
-        [
-            "mx2.vpnjantit.com",
-            2
-        ],
-        [
-            "mx3.vpnjantit.com",
-            3
+    },
+    "cl": {
+        "name": "Chile",
+        "hosts": []
+    },
+    "mx": {
+        "name": "Mexico",
+        "hosts": [
+            [
+                "mx1.vpnjantit.com",
+                1
+            ],
+            [
+                "mx2.vpnjantit.com",
+                2
+            ],
+            [
+                "mx3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "usa": [
-        [
-            "usa1.vpnjantit.com",
-            1
-        ],
-        [
-            "usa2.vpnjantit.com",
-            2
-        ],
-        [
-            "usa3.vpnjantit.com",
-            3
-        ],
-        [
-            "usa4.vpnjantit.com",
-            4
-        ],
-        [
-            "usa5.vpnjantit.com",
-            5
-        ],
-        [
-            "usa6.vpnjantit.com",
-            6
-        ],
-        [
-            "usa7.vpnjantit.com",
-            7
-        ],
-        [
-            "usa8.vpnjantit.com",
-            8
-        ],
-        [
-            "usa9.vpnjantit.com",
-            9
-        ],
-        [
-            "usa10.vpnjantit.com",
-            10
+    },
+    "usa": {
+        "name": "United States",
+        "hosts": [
+            [
+                "usa1.vpnjantit.com",
+                1
+            ],
+            [
+                "usa2.vpnjantit.com",
+                2
+            ],
+            [
+                "usa3.vpnjantit.com",
+                3
+            ],
+            [
+                "usa4.vpnjantit.com",
+                4
+            ],
+            [
+                "usa5.vpnjantit.com",
+                5
+            ],
+            [
+                "usa6.vpnjantit.com",
+                6
+            ],
+            [
+                "usa7.vpnjantit.com",
+                7
+            ],
+            [
+                "usa8.vpnjantit.com",
+                8
+            ],
+            [
+                "usa9.vpnjantit.com",
+                9
+            ],
+            [
+                "usa10.vpnjantit.com",
+                10
+            ]
         ]
-    ],
-    "sa": [
-        [
-            "sa1.vpnjantit.com",
-            1
-        ],
-        [
-            "sa2.vpnjantit.com",
-            2
-        ],
-        [
-            "sa3.vpnjantit.com",
-            3
+    },
+    "sa": {
+        "name": "South Africa",
+        "hosts": [
+            [
+                "sa1.vpnjantit.com",
+                1
+            ],
+            [
+                "sa2.vpnjantit.com",
+                2
+            ],
+            [
+                "sa3.vpnjantit.com",
+                3
+            ]
         ]
-    ],
-    "au": []
+    },
+    "au": {
+        "name": "Australia",
+        "hosts": [
+            [
+                "au1.vpnjantit.com",
+                1
+            ],
+            [
+                "au2.vpnjantit.com",
+                2
+            ]
+        ]
+    }
 }

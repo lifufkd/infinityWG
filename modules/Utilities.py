@@ -84,7 +84,7 @@ def get_best_server(servers: dict, country: str = None, server_number: str = Non
 
     if country:
         selected_country = servers[country]
-        if server_number:
+        if server_number is None:
             return get_best_ping(selected_country)
         else:
             for server in selected_country:

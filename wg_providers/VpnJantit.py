@@ -57,13 +57,13 @@ class VpnJantit:
         if self._country is None:
             user_server = self.__CRUD.get_user_server(self._user_id)
             if user_server is None:
-                return {"status": False, "link": None, "server": None, "message": "server with best connection not found"}
+                return {"status": False, "link": None, "server": None, "message": "server with best connection not found", "code": 0}
             server_prefix = get_link_prefix(json.loads(user_server))
             link = f"https://www.vpnjantit.com/create-free-account?server={server_prefix}&type=WireGuard"
         else:
             user_servers = self.__CRUD.get_user_server_by_country(self._user_id)
             if user_servers is None:
-                return {"status": False, "link": None, "server": None, "message": "server with best connection not found"}
+                return {"status": False, "link": None, "server": None, "message": "server with best connection not found", "code": 1}
             user_servers = json.loads(user_servers)
             if self._server is None:
                 server_prefix = get_link_prefix(get_best_server(user_servers, self._country))
@@ -73,7 +73,7 @@ class VpnJantit:
                 server_prefix = get_link_prefix(get_best_server(user_servers, self._country, self._server))
                 link = f"https://www.vpnjantit.com/create-free-account?server=" \
                        f"{server_prefix}&type=WireGuard"
-        return {"status": True, "link": link, "server": server_prefix, "message": None}
+        return {"status": True, "link": link, "server": server_prefix, "message": None, "code": None}
 
     def refresh_server_list(self):
         # Read JSON countries file
@@ -86,7 +86,7 @@ class VpnJantit:
                 self.__driver.get(f'https://www.vpnjantit.com/create-free-account?server={country}{page_counter}&type=WireGuard')
                 time.sleep(2)
                 if self.__driver.current_url == 'https://www.vpnjantit.com/': # Check for server is existed
-                    del countries[country][page_counter-1:]
+                    del countries[country]["hosts"][page_counter-1:]
                     # Update JSON countries file
                     write_json_file(self.__logger, './src/selenium/countries.json', countries)
                     # Stop search for this country
@@ -94,10 +94,10 @@ class VpnJantit:
                 # Get Server domain name
                 server_domain_name = self.__driver.find_element(By.CSS_SELECTOR, "input#server").get_attribute('value')
                 self.__logger.info(f'Server updated - {server_domain_name}')
-                if len(countries[country]) >= page_counter: # Checking for an index in the array
-                    countries[country][page_counter-1] = [server_domain_name, page_counter]
+                if len(countries[country]["hosts"]) >= page_counter: # Checking for an index in the array
+                    countries[country]["hosts"][page_counter-1] = [server_domain_name, page_counter]
                 else:
-                    countries[country].append([server_domain_name, page_counter])
+                    countries[country]["hosts"].append([server_domain_name, page_counter])
                 # Update JSON countries file
                 write_json_file(self.__logger, './src/selenium/countries.json', countries)
 
