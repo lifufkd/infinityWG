@@ -114,9 +114,7 @@ class VpnJantit:
                 recaptcha_response_element = self.__driver.find_element(By.CLASS_NAME, 'cf-turnstile').find_element(By.TAG_NAME, "input")
                 # Check if captcha solved automatically
                 _data = recaptcha_response_element.get_attribute('value')
-                print(_data)
-                if len(_data) != 0:
-                    print(2342342342342)
+                if len(_data) == 0:
                     # Getting site key for solve captcha
                     site_key = self.__driver.find_element(By.CLASS_NAME, "cf-turnstile").get_attribute("data-sitekey")
                     # Send request to solve captcha

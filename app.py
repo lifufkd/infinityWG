@@ -22,7 +22,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel, Field
 ##########################
 config_path = 'config.json'
-version = Version.debug
+version = Version.release
 ##########################
 
 
