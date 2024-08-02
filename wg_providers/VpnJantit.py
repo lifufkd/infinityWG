@@ -80,6 +80,7 @@ class VpnJantit:
                     link = f"https://www.vpnjantit.com/create-free-account?server=" \
                            f"{server_prefix}&type=WireGuard"
         except Exception as e:
+            self.__logger.error(f"An error occurred - {e}")
             return {"status": False, "link": None, "server": None, "detail": str(e), "code": None}
 
         return {"status": True, "link": link, "server": server_prefix, "detail": None, "code": None}
@@ -166,7 +167,7 @@ class VpnJantit:
             except Exception as e:
                 self.__logger.error(f"An error occurred - {e}")
                 data.update({"status": False})
-                data.update({"detail": f"An error occurred - {e}"})
+                data.update({"detail": str(e)})
                 return data
         else:
             return data
