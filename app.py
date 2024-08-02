@@ -164,7 +164,6 @@ def main():
     @app.post("/get/config")
     async def get_config(user_data: GetConfig, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
         if user_data.country != "Auto":
-            print(user_data.country)
             user_server = check_country_existed(user_data.country)
             if not user_server.get("status"):
                 raise HTTPException(status_code=404, detail="Country does not exists")
@@ -204,7 +203,6 @@ def main():
     async def get_countries(vpn_countries: BestVpnCountries, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
         _status = db.update_user_best_vpn_countries(user_id, vpn_countries.countries)
         return {"status": _status}
-
 
 
 if __name__ == '__main__':
