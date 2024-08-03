@@ -68,6 +68,7 @@ class Sqlite3:
 
     def db_read(self, query: str, args: Optional[tuple] = ()) -> Optional[list[dict]] | bool:
         status = bool
+        results = list()
         self.set_lock()
         try:
             self.__cursor.execute(query, args)
