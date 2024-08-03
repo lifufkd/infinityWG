@@ -7,8 +7,8 @@ import sys
 import pymysql
 import pymysql.cursors
 from typing import Optional
-from modules.Logger import Logger
-from modules.Config import Config
+from modules.logger import Logger
+from modules.config import Config
 ##########################
 
 ##########################

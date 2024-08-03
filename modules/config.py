@@ -5,6 +5,7 @@
 import os
 import json
 import sys
+from modules.utilities import generate_random_string
 ##########################
 
 ##########################
@@ -16,7 +17,7 @@ class Config:
         self.__config_path = config_path
         self.config_data = None
         self.__default_config_data = {
-            "version": "realise",
+            "version": "release",
             "DB": "sqlite3",
             "sqlite3_db_path": "db.sqlite3",
             "mysql_creds": {
@@ -32,7 +33,7 @@ class Config:
             "access_token": {
                 "expire_minutes": 15,
                 "algorithm": "HS256",
-                "server_secret_key": "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+                "server_secret_key": generate_random_string(64)
             },
             "2captcha_apiKey": "***"
         }

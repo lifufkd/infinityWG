@@ -11,10 +11,10 @@ from typing import Optional
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
 from modules.DB.CRUD import CRUD
-from modules.CaptchaSolver import CaptchaSolver
-from modules.Config import Config
-from modules.Logger import Logger
-from modules.Utilities import (write_json_file, read_json_file, get_best_server,
+from modules.captcha_solver import CaptchaSolver
+from modules.config import Config
+from modules.logger import Logger
+from modules.utilities import (write_json_file, read_json_file, get_best_server,
                                generate_random_string, read_config_file, exception_factory)
 ##########################
 
@@ -24,7 +24,7 @@ from modules.Utilities import (write_json_file, read_json_file, get_best_server,
 class VpnJantit:
     def __init__(self, db_connector: MySql | Sqlite3 | None = None, config: Config | None = None,
                  logger: Logger | None = None, country: str | None = None, server: str | None = None,
-                 user_id: int | None = None, version: str = 'release'):
+                 user_id: int | None = None, version: str = 'debug'):
         super(VpnJantit, self).__init__()
         self.__version = version
         self.__config = config

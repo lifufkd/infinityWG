@@ -17,13 +17,17 @@ from modules.DB.connectors.sqlite import Sqlite3
 #####################################
 
 
-class Version():
+class Version:
     release: str = 'release'
     debug: str = 'debug'
 
 
 def exception_factory(exception, message) -> Optional[Exception]:
     return exception(message)
+
+
+def generate_random_string(length: int = 64) -> str:
+    return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(length))
 
 
 def replace_args_for_db(db: MySql | Sqlite3, query: str) -> Optional[str]:
@@ -98,26 +102,6 @@ def get_best_server(servers: dict, country: str = None, server_number: str = Non
             avg_ping.update({selected_best_server[2]: selected_best_server})
         best_server_ping = min(list(avg_ping.keys()))
         return avg_ping[best_server_ping]
-
-
-
-def generate_random_string(length):
-    """
-    Генерирует случайную строку заданной длины из заглавных и строчных букв латинского алфавита и цифр.
-
-    Аргументы:
-    length (int): Длина генерируемой строки.
-
-    Возвращает:
-    str: Случайная строка заданной длины.
-    """
-    # Создаем список всех символов, из которых будет генерироваться строка
-    characters = string.ascii_letters + string.digits
-
-    # Генерируем случайную строку указанной длины
-    random_string = ''.join(random.choice(characters) for _ in range(length))
-
-    return random_string
 
 
 def read_config_file(logger, file_name, timeout=30) -> Optional[str] or None:
