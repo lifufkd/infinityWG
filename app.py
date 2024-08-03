@@ -4,13 +4,13 @@
 ##########################
 import uvicorn
 import sys
-from modules.Logger import Logger
-from modules.Config import Config
-from modules.Utilities import Version, read_json_file
+from modules.logger import Logger
+from modules.config import Config
+from modules.utilities import Version, read_json_file
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
 from modules.DB.CRUD import CRUD
-from wg_providers.VpnJantit import VpnJantit
+from providers.vpn_jantit import VpnJantit
 
 from datetime import datetime, timedelta, timezone
 from typing import Annotated

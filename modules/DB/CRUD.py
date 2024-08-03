@@ -7,7 +7,7 @@ import json
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
 from typing import Optional
-from modules.Utilities import replace_args_for_db
+from modules.utilities import replace_args_for_db
 from typing import Annotated
 ##########################
 config_path = 'config.json'
