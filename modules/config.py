@@ -5,7 +5,6 @@
 import os
 import json
 import sys
-from modules.utilities import generate_random_string
 ##########################
 
 ##########################
@@ -33,7 +32,7 @@ class Config:
             "access_token": {
                 "expire_minutes": 15,
                 "algorithm": "HS256",
-                "server_secret_key": generate_random_string(64)
+                "server_secret_key": ""
             },
             "2captcha_apiKey": "***"
         }
@@ -44,6 +43,8 @@ class Config:
             with open(self.__config_path, 'r') as config:
                 self.config_data = json.loads(config.read())
         else:
+            from modules.utilities import generate_random_string
+            self.__default_config_data["access_token"]["server_secret_key"] = generate_random_string(64)
             self.config_data = self.__default_config_data
             self.save_config()
             sys.exit("Config file not found")
