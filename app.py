@@ -22,7 +22,6 @@ from passlib.context import CryptContext
 from pydantic import BaseModel, Field
 ##########################
 config_path = 'config.json'
-version = Version.release
 ##########################
 
 
@@ -171,7 +170,7 @@ def main():
         else:
             country = None
         parser = VpnJantit(db_connector, config, logger, country, user_data.server,
-                           user_id, version)
+                           user_id, version=config.get_config_data("version"))
         _config = parser.get_config()
         del parser
         return _config
@@ -184,7 +183,8 @@ def main():
     @app.post("/update/countries")
     async def get_countries(token_status: Annotated[bool, Depends(get_token_status)]) -> dict:
         if token_status:
-            parser = VpnJantit(db_connector=db_connector, config=config, logger=logger, version=version)
+            parser = VpnJantit(db_connector=db_connector, config=config, logger=logger,
+                               version=config.get_config_data("version"))
             parser.refresh_server_list()
             del parser
             return {"status": True}
@@ -208,8 +208,8 @@ def main():
 if __name__ == '__main__':
     # TODO: Need code refactoring for FastAPI code in app.py
     # TODO: Relocate countries.json to /src
-    logger = Logger(version)
     config = Config(config_path)
+    logger = Logger(version=config.get_config_data("version"))
     db, db_connector = setup_db()
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

@@ -17,7 +17,7 @@ from modules.DB.connectors.sqlite import Sqlite3
 #####################################
 
 
-class Version():
+class Version:
     release: str = 'release'
     debug: str = 'debug'
 

@@ -16,7 +16,7 @@ class Config:
         self.__config_path = config_path
         self.config_data = None
         self.__default_config_data = {
-            "version": "realise",
+            "version": "release",
             "DB": "sqlite3",
             "sqlite3_db_path": "db.sqlite3",
             "mysql_creds": {
