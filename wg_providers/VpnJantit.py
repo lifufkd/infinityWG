@@ -124,7 +124,6 @@ class VpnJantit:
 
                 # Generate random username
                 random_login = generate_random_string(13)
-                self.__driver.save_screenshot("screenshot.png")
                 self.__driver.find_element(By.CSS_SELECTOR, "section#create > div > div > div > div > div > div > "
                                                             "form > div > input").send_keys(random_login)
 
