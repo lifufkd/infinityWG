@@ -1,0 +1,6 @@
+venv
+.idea
+src/uBlockOrigin
+config.json
+logfile.log
+db.sqlite3
