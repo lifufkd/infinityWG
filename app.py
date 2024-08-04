@@ -67,6 +67,7 @@ def main():
     class GetConfig(BaseModel):
         country: str | None = None
         server: str | None = None
+        server_quality: int = -1
 
     def get_password_hash(password):
         return pwd_context.hash(password)

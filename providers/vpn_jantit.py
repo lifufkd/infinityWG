@@ -24,7 +24,7 @@ from modules.utilities import (write_json_file, read_json_file, get_best_server,
 class VpnJantit:
     def __init__(self, db_connector: MySql | Sqlite3 | None = None, config: Config | None = None,
                  logger: Logger | None = None, country: str | None = None, server: str | None = None,
-                 user_id: int | None = None, version: str = 'debug'):
+                 user_id: int | None = None, server_quality: int = -1, version: str = 'debug'):
         super(VpnJantit, self).__init__()
         self.__version = version
         self.__config = config
@@ -32,6 +32,7 @@ class VpnJantit:
         self._country = country
         self._server = server
         self._user_id = user_id
+        self._server_quality = server_quality
         self.__driver: Driver = None
         self.__CRUD = CRUD(db_connector)
         self._captcha_solver = CaptchaSolver(config, logger)
@@ -59,26 +60,44 @@ class VpnJantit:
         def get_link_prefix(data):
             return data[0].split('.')[0]
 
+        def get_user_servers():
+            _user_servers = self.__CRUD.get_user_server_by_country(self._user_id)
+            if _user_servers is None:
+                raise exception_factory(ValueError, "Users servers not found")
+            return json.loads(_user_servers)
+
         try:
             if self._country is None:
-                user_server = self.__CRUD.get_user_server(self._user_id)
-                if user_server is None:
-                    return {"status": False, "link": None, "server": None, "detail": "server with best connection not found", "code": 0}
-                server_prefix = get_link_prefix(json.loads(user_server))
-                link = f"https://www.vpnjantit.com/create-free-account?server={server_prefix}&type=WireGuard"
+                if self._server_quality == -1:
+                    user_server = self.__CRUD.get_user_server(self._user_id)
+                    if user_server is None:
+                        return {"status": False, "link": None, "server": None, "detail":
+                            "server with best connection not found", "code": 0}
+                    server_prefix = get_link_prefix(json.loads(user_server))
+                    link = f"https://www.vpnjantit.com/create-free-account?server={server_prefix}&type=WireGuard"
+                else:
+                    user_servers = get_user_servers()
+                    server_prefix = get_link_prefix(get_best_server(servers=user_servers,
+                                                                    server_quality=self._server_quality))
+                    link = f"https://www.vpnjantit.com/create-free-account?server=" \
+                           f"{server_prefix}&type=WireGuard"
             else:
-                user_servers = self.__CRUD.get_user_server_by_country(self._user_id)
-                if user_servers is None:
-                    return {"status": False, "link": None, "server": None, "detail": "server with best connection not found", "code": 1}
-                user_servers = json.loads(user_servers)
+                user_servers = get_user_servers()
                 if self._server is None:
-                    server_prefix = get_link_prefix(get_best_server(user_servers, self._country))
+                    server_prefix = get_link_prefix(get_best_server(user_servers, self._country,
+                                                                    server_quality=self._server_quality))
                     link = f"https://www.vpnjantit.com/create-free-account?server=" \
                            f"{server_prefix}&type=WireGuard"
                 else:
-                    server_prefix = get_link_prefix(get_best_server(user_servers, self._country, self._server))
+                    server_prefix = get_link_prefix(get_best_server(user_servers, self._country, self._server,
+                                                                    server_quality=self._server_quality))
                     link = f"https://www.vpnjantit.com/create-free-account?server=" \
                            f"{server_prefix}&type=WireGuard"
+
+        except ValueError:
+            return {"status": False, "link": None, "server": None, "detail": "server with best connection not found",
+                    "code": 1}
+
         except Exception as e:
             self.__logger.error(f"An error occurred - {e}")
             return {"status": False, "link": None, "server": None, "detail": str(e), "code": None}

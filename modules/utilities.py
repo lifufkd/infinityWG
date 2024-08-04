@@ -77,19 +77,21 @@ def get_ip_address_by_domain(domain_name):
     return None
 
 
-def get_best_server(servers: dict, country: str = None, server_number: str = None) -> Optional[str]:
+def get_best_server(servers: dict, country: str = None, server_number: str = None,
+                    server_quality: int = -1) -> Optional[str]:
 
-    def get_best_ping(_country):
+    def get_best_ping(_country, _server_quality):
         server_pings = dict()
-        for index, server in enumerate(_country):
-            server_pings.update({server[2]: index})
-        min_ping = min(list(server_pings.keys()))
-        return _country[server_pings[min_ping]]
+        for index, _server in enumerate(_country):
+            server_pings.update({_server[2]: index})
+        _sorted_ping = sorted(list(server_pings.keys()))[::-1]
+        _min_ping = _sorted_ping[_server_quality]
+        return _country[server_pings[_min_ping]]
 
     if country:
         selected_country = servers[country]
         if server_number is None:
-            return get_best_ping(selected_country)
+            return get_best_ping(selected_country, server_quality)
         else:
             for server in selected_country:
                 if server[1] == server_number:
@@ -98,10 +100,11 @@ def get_best_server(servers: dict, country: str = None, server_number: str = Non
         avg_ping = dict()
         for country in servers:
             selected_country = servers[country]
-            selected_best_server = get_best_ping(selected_country)
+            selected_best_server = get_best_ping(selected_country, -1)
             avg_ping.update({selected_best_server[2]: selected_best_server})
-        best_server_ping = min(list(avg_ping.keys()))
-        return avg_ping[best_server_ping]
+        sorted_ping = sorted(list(avg_ping.keys()))[::-1]
+        min_ping = sorted_ping[server_quality]
+        return avg_ping[min_ping]
 
 
 def read_config_file(logger, file_name, timeout=30) -> Optional[str] or None:
@@ -125,7 +128,6 @@ def read_config_file(logger, file_name, timeout=30) -> Optional[str] or None:
     except TimeoutError:
         logger.error("Еhe config did not download")
         return None
-
 
 
 def ping(host, timeout=1):
