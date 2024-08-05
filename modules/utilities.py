@@ -56,15 +56,15 @@ def write_json_file(logger, path, data) -> Optional[bool]:
         sys.exit()
 
 
-def read_json_file(logger, path) -> Optional[dict]:
+async def read_json_file(logger, path) -> Optional[dict]:
     try:
         with open(path, 'r') as file:
             data = json.loads(file.read())
             file.close()
-        return data
-    except:
+        return {"status": True, "detail": None, "data": data}
+    except Exception as e:
         logger.error("The json file is corrupted or missing!")
-        sys.exit()
+        return {"status": False, "detail": str(e)}
 
 
 def get_ip_address_by_domain(domain_name):
