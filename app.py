@@ -6,7 +6,7 @@ import uvicorn
 import sys
 from modules.logger import Logger
 from modules.config import Config
-from modules.utilities import read_json_file
+from modules.utilities import read_json_file, get_city_by_ip
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
 from modules.DB.CRUD import CRUD
@@ -205,8 +205,26 @@ def main():
 
     @app.post("/update/ip")
     async def get_countries(user_ip: GetIP, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
+        new_ip = user_ip.ip
+        old_ip = await db.get_user_ip(user_id)
+        if new_ip == old_ip:
+            return {"status": True, "detail": None}
+
         _status = await db.update_user_ip(user_id, user_ip.ip)
-        return {"status": _status}
+        if not _status:
+            return {"status": False, "detail": "Error updating ip"}
+
+        old_city = await get_city_by_ip(logger, ip_address=old_ip)
+        new_city = await get_city_by_ip(logger, ip_address=new_ip)
+        if old_city == new_city:
+            return {"status": True, "detail": None}
+
+        _status1 = await db.update_user_best_vpn_address(user_id, [])
+        _status2 = await db.update_user_best_vpn_countries(user_id, {})
+        if not _status1 or not _status2:
+            return {"status": False, "detail": "Error deleting old synchronized countries"}
+
+        return {"status": True, "detail": None}
 
     @app.post("/update/best_vpn_address")
     async def get_countries(vpn_host: BestVpnAddress, user_id: Annotated[int, Depends(get_user_id)]) -> dict:

@@ -83,20 +83,18 @@ class CRUD:
         return data[0]["ip_address"]
 
     async def update_user_ip(self, user_id: int, ip: str | None = None):
-        if ip == await self.get_user_ip(user_id):
-            return True
         query = "UPDATE `users` SET `ip_address` = %s WHERE `user_id` = %s"
         status = await self.__db.db_write(replace_args_for_db(self.__db, query),
                                     (ip, user_id))
         return status
 
-    async def update_user_best_vpn_address(self, user_id: int, host: list[str] | None = None):
+    async def update_user_best_vpn_address(self, user_id: int, host: list[str]):
         query = "UPDATE `users` SET `best_vpn_address` = %s WHERE `user_id` = %s"
         status = await self.__db.db_write(replace_args_for_db(self.__db, query),
                                          (json.dumps(host), user_id))
         return status
 
-    async def update_user_best_vpn_countries(self, user_id: int, countries: dict | None = None):
+    async def update_user_best_vpn_countries(self, user_id: int, countries: dict):
         query = "UPDATE `users` SET `best_vpn_countries` = %s WHERE `user_id` = %s"
         status = await self.__db.db_write(replace_args_for_db(self.__db, query),
                                          (json.dumps(countries), user_id))

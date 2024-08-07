@@ -11,6 +11,7 @@ import struct
 import select
 import random
 import string
+import aiohttp
 from typing import Optional
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
@@ -20,6 +21,23 @@ from modules.DB.connectors.sqlite import Sqlite3
 class Version:
     release: str = 'release'
     debug: str = 'debug'
+
+
+async def get_city_by_ip(logger, ip_address: str | None = None) -> str | None:
+    try:
+        url = 'https://ipinfo.io'
+        if ip_address:
+            url += f'/{ip_address}'
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                data = await response.json()
+                city = data.get('city', None)
+                return city
+
+    except Exception as e:
+        logger.warning(f"Error getting client's country by ip: {str(e)}")
+        return None
 
 
 def exception_factory(exception, message) -> Optional[Exception]:
