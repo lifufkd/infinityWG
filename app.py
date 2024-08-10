@@ -6,7 +6,7 @@ import uvicorn
 import sys
 from modules.logger import Logger
 from modules.config import Config
-from modules.utilities import Version, read_json_file
+from modules.utilities import read_json_file, get_city_by_ip
 from modules.DB.connectors.mysql import MySql
 from modules.DB.connectors.sqlite import Sqlite3
 from modules.DB.CRUD import CRUD
@@ -15,7 +15,7 @@ from providers.vpn_jantit import VpnJantit
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 import jwt
-from fastapi import Depends, FastAPI, HTTPException, status, Query, Body
+from fastapi import Depends, FastAPI, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
@@ -64,9 +64,13 @@ def main():
     class TokenData(BaseModel):
         username: str | None = None
 
-    class GetConfig(BaseModel):
+    class RequestConfig(BaseModel):
         country: str | None = None
         server: str | None = None
+        server_quality: int = -1
+
+    class GetConfig(BaseModel):
+        request_id: int
 
     def get_password_hash(password):
         return pwd_context.hash(password)
@@ -74,8 +78,8 @@ def main():
     def verify_password(plain_password, hashed_password):
         return pwd_context.verify(plain_password, hashed_password)
 
-    def check_user_credentials(login: str, password: str) -> bool:
-        password_hash = db.get_user_hash(login)
+    async def check_user_credentials(login: str, password: str) -> bool:
+        password_hash = await db.get_user_hash(login)
         if not password_hash:
             return False
         if not verify_password(plain_password=password, hashed_password=password_hash):
@@ -110,28 +114,29 @@ def main():
             token_data = TokenData(username=username)
         except InvalidTokenError:
             raise credentials_exception
-        if not db.user_is_exists(token_data.username):
+        if not await db.user_is_exists(token_data.username):
             raise credentials_exception
         return token_data
 
     async def get_user_id(user: Annotated[TokenData, Depends(get_token_status)]) -> int:
-        return db.get_user_id(user.username)
+        return await db.get_user_id(user.username)
 
-    def check_country_existed(country: str) -> dict:
+    async def check_country_existed(country: str) -> dict:
         temp = list()
-        data = read_json_file(logger, "src/selenium/countries.json")
-        for _country in data.values():
+        data = await read_json_file(logger, "src/selenium/countries.json")
+        if not data["status"]:
+            return {"status": False, "detail": data["detail"]}
+        for _country in data["data"].values():
             temp.append(_country["name"])
         if country not in temp:
-            print(11111)
             return {"status": False}
         return {"status": True, "country": country}
 
     @app.post("/users/registration")
     async def registration(user_data: Annotated[RegisterUser, Body()]) -> dict:
-        if user_data.username not in db.get_users_logins():
+        if user_data.username not in await db.get_users_logins():
             hashed_password = get_password_hash(user_data.password)
-            if not db.add_user(user_data.username, hashed_password, user_data.full_name):
+            if not await db.add_user(user_data.username, hashed_password, user_data.full_name):
                 raise HTTPException(status_code=402, detail="An error occurred adding to db")
         else:
             raise HTTPException(status_code=401, detail="User already existed")
@@ -141,7 +146,7 @@ def main():
     async def login_for_access_token(
             form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     ) -> dict:
-        user = check_user_credentials(form_data.username, form_data.password)
+        user = await check_user_credentials(form_data.username, form_data.password)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -160,10 +165,10 @@ def main():
     ):
         return {"detail": "Token is valid"}
 
-    @app.post("/get/config")
-    async def get_config(user_data: GetConfig, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
+    @app.post("/request/config")
+    async def get_config(user_data: RequestConfig, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
         if user_data.country != "Auto":
-            user_server = check_country_existed(user_data.country)
+            user_server = await check_country_existed(user_data.country)
             if not user_server.get("status"):
                 raise HTTPException(status_code=404, detail="Country does not exists")
             country = user_server.get("country")
@@ -171,28 +176,55 @@ def main():
             country = None
         parser = VpnJantit(db_connector, config, logger, country, user_data.server,
                            user_id, version=config.get_config_data("version"))
-        _config = parser.get_config()
-        del parser
-        return _config
+        await parser.init()
+        return await parser.get_config()
+
+    @app.post("/get/config")
+    async def get_config(user_data: GetConfig, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
+        _status = await db.get_config(request_id=user_data.request_id, user_id=user_id)
+        if not _status:
+            return {"status": False, "config": None, "detail": "request not found or not ready yet"}
+        else:
+            return {"status": True, "config": _status, "detail": None}
 
     @app.get("/get/countries")
     async def get_countries(token_status: Annotated[bool, Depends(get_token_status)]) -> dict:
-        if token_status:
-            return read_json_file(logger, "src/selenium/countries.json")
+        countries = await read_json_file(logger, "src/selenium/countries.json")
+        if not countries["status"]:
+            raise HTTPException(status_code=404, detail="Error getting countries")
+        return countries["data"]
 
     @app.post("/update/countries")
     async def get_countries(token_status: Annotated[bool, Depends(get_token_status)]) -> dict:
-        if token_status:
-            parser = VpnJantit(db_connector=db_connector, config=config, logger=logger,
-                               version=config.get_config_data("version"))
-            parser.refresh_server_list()
-            del parser
-            return {"status": True}
+        parser = VpnJantit(db_connector=db_connector, config=config, logger=logger,
+                           version=config.get_config_data("version"))
+        await parser.init()
+        await parser.refresh_server_list()
+        del parser
+        return {"status": True}
 
     @app.post("/update/ip")
     async def get_countries(user_ip: GetIP, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
-        _status = db.update_user_ip(user_id, user_ip.ip)
-        return {"status": _status}
+        new_ip = user_ip.ip
+        old_ip = await db.get_user_ip(user_id)
+        if new_ip == old_ip:
+            return {"status": True, "detail": None}
+
+        _status = await db.update_user_ip(user_id, user_ip.ip)
+        if not _status:
+            return {"status": False, "detail": "Error updating ip"}
+
+        old_city = await get_city_by_ip(logger, ip_address=old_ip)
+        new_city = await get_city_by_ip(logger, ip_address=new_ip)
+        if old_city == new_city:
+            return {"status": True, "detail": None}
+
+        _status1 = await db.update_user_best_vpn_address(user_id, [])
+        _status2 = await db.update_user_best_vpn_countries(user_id, {})
+        if not _status1 or not _status2:
+            return {"status": False, "detail": "Error deleting old synchronized countries"}
+
+        return {"status": True, "detail": None}
 
     @app.post("/update/best_vpn_address")
     async def get_countries(vpn_host: BestVpnAddress, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
@@ -201,7 +233,7 @@ def main():
 
     @app.post("/update/best_vpn_countries")
     async def get_countries(vpn_countries: BestVpnCountries, user_id: Annotated[int, Depends(get_user_id)]) -> dict:
-        _status = db.update_user_best_vpn_countries(user_id, vpn_countries.countries)
+        _status = await db.update_user_best_vpn_countries(user_id, vpn_countries.countries)
         return {"status": _status}
 
 

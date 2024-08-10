@@ -5,6 +5,8 @@
 import os
 import json
 import sys
+import random
+import string
 ##########################
 
 ##########################
@@ -38,13 +40,16 @@ class Config:
         }
         self.load_config()
 
+    @staticmethod
+    def generate_random_string(length: int = 64) -> str:
+        return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(length))
+
     def load_config(self):
         if os.path.exists(self.__config_path):
             with open(self.__config_path, 'r') as config:
                 self.config_data = json.loads(config.read())
         else:
-            from modules.utilities import generate_random_string
-            self.__default_config_data["access_token"]["server_secret_key"] = generate_random_string(64)
+            self.__default_config_data["access_token"]["server_secret_key"] = self.generate_random_string(64)
             self.config_data = self.__default_config_data
             self.save_config()
             sys.exit("Config file not found")
